@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Button, Checkbox, Input, Select, Switch } from '../../../src';
 import { PHASES, PROJECTS, SECTORS, STATUSES, TODAY, type Project, type Status } from './data';
 import { daysBetween, money, shortDate, variancePct } from './format';
@@ -75,8 +75,12 @@ export function ProjectTable() {
   const [manager, setManager] = useState('all');
   const [overOnly, setOverOnly] = useState(false);
   const [sort, setSort] = useState<{ key: SortKey; dir: SortDir }>({ key: 'status', dir: 'asc' });
-  const [pageSize, setPageSize] = useState(8);
-  const [page, setPage] = useState(0);
+  // Infinite scroll: rows load in batches as the bottom of the list comes into view.
+  const BATCH = 6;
+  const [visible, setVisible] = useState(BATCH);
+  const [loading, setLoading] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const setPage = (_: number) => setVisible(BATCH);
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
   // Everything except the status tab, so tab counts reflect the other filters.
@@ -101,10 +105,25 @@ export function ProjectTable() {
     });
   }, [baseFiltered, status, sort]);
 
-  const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
-  useEffect(() => { if (page > pageCount - 1) setPage(pageCount - 1); }, [page, pageCount]);
-  const start = page * pageSize;
-  const pageRows = rows.slice(start, start + pageSize);
+  const pageRows = rows.slice(0, visible);
+  const hasMore = visible < rows.length;
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el || !hasMore || loading) return;
+    const io = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) setLoading(true);
+    }, { rootMargin: '120px 0px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [hasMore, loading, visible, rows]);
+
+  useEffect(() => {
+    if (!loading) return;
+    // Short delay stands in for fetching the next batch from the server.
+    const t = window.setTimeout(() => { setVisible((v) => v + BATCH); setLoading(false); }, 450);
+    return () => window.clearTimeout(t);
+  }, [loading]);
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { all: baseFiltered.length };
@@ -202,7 +221,7 @@ export function ProjectTable() {
             <tr>
               <th scope="col" className="cd-check">
                 <Checkbox
-                  aria-label="Select all projects on this page"
+                  aria-label="Select all loaded projects"
                   checked={pageIds.length > 0 && selectedOnPage === pageIds.length}
                   indeterminate={selectedOnPage > 0 && selectedOnPage < pageIds.length}
                   onChange={toggleAll}
@@ -277,22 +296,18 @@ export function ProjectTable() {
         )}
       </div>
 
+      {hasMore && (
+        <div ref={sentinelRef} className="cd-loadmore" aria-live="polite">
+          {loading ? <><span className="cd-spinner" aria-hidden="true" /> Loading more projects…</> : <span className="cd-muted">Scroll for more</span>}
+        </div>
+      )}
+
       <div className="cd-pager">
         <span className="cd-muted">
-          {rows.length === 0 ? 'No results' : `Showing ${start + 1}–${Math.min(start + pageSize, rows.length)} of ${rows.length} projects`}
+          {rows.length === 0 ? 'No results' : hasMore ? `Showing ${pageRows.length} of ${rows.length} projects` : `All ${rows.length} projects loaded`}
         </span>
-        <div className="cd-pager__controls">
-          <label htmlFor="page-size" className="cd-muted">Rows</label>
-          <Select id="page-size" size="sm" value={String(pageSize)} onChange={(e) => { setPageSize(Number(e.target.value)); setPage(0); }} className="cd-pager__size">
-            {[5, 8, 15, 25].map((n) => <option key={n} value={n}>{n}</option>)}
-          </Select>
-          <Button variant="secondary" size="sm" aria-label="Previous page" disabled={page === 0} onClick={() => setPage(page - 1)}>
-            <Icons.ChevronLeft width={16} height={16} />
-          </Button>
-          <span className="cd-pager__page">Page {Math.min(page + 1, pageCount)} of {pageCount}</span>
-          <Button variant="secondary" size="sm" aria-label="Next page" disabled={page >= pageCount - 1} onClick={() => setPage(page + 1)}>
-            <Icons.ChevronRight width={16} height={16} />
-          </Button>
+        <div className="cd-pager__meter" aria-hidden="true">
+          <span style={{ width: `${rows.length ? (pageRows.length / rows.length) * 100 : 0}%` }} />
         </div>
       </div>
     </section>

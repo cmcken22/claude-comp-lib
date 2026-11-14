@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Input, PageLayout, Select } from '../../../src';
 import { Icons } from './icons';
 import { ProjectTable } from './ProjectTable';
+import { Skyline } from './Skyline';
 import { StatCards } from './StatCards';
 
 const NAV = [
@@ -15,7 +16,7 @@ const NAV = [
   { id: 'documents', label: 'Documents', icon: Icons.Docs },
 ];
 
-function Sidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
+function Sidebar({ open, onClose, collapsed, onToggleCollapse }: { open: boolean; onClose: () => void; collapsed: boolean; onToggleCollapse: () => void }) {
   const [active, setActive] = useState('overview');
   return (
     <>
@@ -27,6 +28,17 @@ function Sidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
             <strong>Keystone Build</strong>
             <span>Field operations</span>
           </span>
+          <Button
+            className="cd-collapse-btn"
+            variant="ghost"
+            size="sm"
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-expanded={!collapsed}
+            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            onClick={onToggleCollapse}
+          >
+            <Icons.ChevronLeft width={16} height={16} />
+          </Button>
           <Button className="cd-sidebar__close" variant="ghost" size="sm" aria-label="Close menu" onClick={onClose}>
             <Icons.Close />
           </Button>
@@ -40,16 +52,17 @@ function Sidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
               href={`#${id === 'overview' ? '' : id}`}
               className={`cd-nav__item${active === id ? ' cd-nav__item--active' : ''}`}
               aria-current={active === id ? 'page' : undefined}
+              title={collapsed ? label : undefined}
               onClick={(e) => { e.preventDefault(); setActive(id); onClose(); }}
             >
               <Icon />
-              <span>{label}</span>
+              <span className="cd-nav__label">{label}</span>
               {count != null && <span className={`cd-nav__count${alert ? ' cd-nav__count--alert' : ''}`}>{count}</span>}
             </a>
           ))}
           <span className="cd-nav__heading">Account</span>
-          <a href="#" className="cd-nav__item" onClick={(e) => e.preventDefault()}>
-            <Icons.Settings /><span>Settings</span>
+          <a href="#" className="cd-nav__item" title={collapsed ? 'Settings' : undefined} onClick={(e) => e.preventDefault()}>
+            <Icons.Settings /><span className="cd-nav__label">Settings</span>
           </a>
         </nav>
 
@@ -72,10 +85,10 @@ function Sidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   );
 }
 
-function Topbar({ onMenu }: { onMenu: () => void }) {
+function Topbar({ onMenu, expanded }: { onMenu: () => void; expanded: boolean }) {
   return (
     <div className="cd-topbar">
-      <Button className="cd-topbar__menu" variant="ghost" size="sm" aria-label="Open menu" onClick={onMenu}>
+      <Button className="cd-topbar__menu" variant="ghost" size="sm" aria-label="Toggle sidebar" aria-expanded={expanded} title="Toggle sidebar" onClick={onMenu}>
         <Icons.Menu />
       </Button>
       <div className="cd-topbar__search">
@@ -109,16 +122,28 @@ function Topbar({ onMenu }: { onMenu: () => void }) {
 
 export function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => {
+    try { return localStorage.getItem('cd-sidebar-collapsed') === '1'; } catch { return false; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem('cd-sidebar-collapsed', collapsed ? '1' : '0'); } catch { /* storage unavailable */ }
+  }, [collapsed]);
+  const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
+  // Desktop: collapse to an icon rail. Smaller screens: open the drawer.
+  const toggleSidebar = () => (isDesktop() ? setCollapsed((c) => !c) : setMenuOpen((o) => !o));
+
   return (
-    <div className="cd-app" data-theme="dark">
-      <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
+    <div className={`cd-app${collapsed ? ' cd-app--collapsed' : ''}`} data-theme="dark">
+      <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} collapsed={collapsed} onToggleCollapse={() => setCollapsed((c) => !c)} />
       <PageLayout
         className="cd-page"
         maxWidth="full"
         stickyHeader
-        header={<Topbar onMenu={() => setMenuOpen(true)} />}
+        header={<Topbar onMenu={toggleSidebar} expanded={!collapsed} />}
       >
         <div className="cd-content">
+          <div className="cd-hero">
+          <Skyline />
           <div className="cd-page-head">
             <div>
               <p className="cd-eyebrow">Week 46 · Nov 9 – Nov 15, 2026</p>
@@ -127,6 +152,7 @@ export function App() {
             <Button variant="secondary" size="sm" startIcon={<Icons.Download width={16} height={16} />}>
               Weekly report
             </Button>
+          </div>
           </div>
           <StatCards />
           <ProjectTable />
