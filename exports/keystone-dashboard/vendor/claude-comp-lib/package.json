@@ -1,0 +1,24 @@
+{
+  "name": "claude-comp-lib",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Vendored build of claude-comp-lib (React + TypeScript components on SCSS design tokens).",
+  "type": "module",
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "require": "./index.cjs"
+    },
+    "./styles.css": "./styles.css",
+    "./tokens": "./tokens/_index.scss"
+  },
+  "sideEffects": ["**/*.css"],
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  }
+}

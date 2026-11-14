@@ -307,6 +307,7 @@
 
 .cd-stat {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto auto 1fr;
   align-content: start;
   gap: token('space-2');
@@ -441,7 +442,8 @@
 }
 
 .cd-spark {
-  flex: none;
+  flex: 0 1 7.5rem;
+  min-width: 3rem;
   width: 7.5rem;
   height: 2.25rem;
   overflow: visible;

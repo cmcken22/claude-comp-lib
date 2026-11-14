@@ -1,0 +1,26 @@
+{
+  "name": "keystone-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Construction operations dashboard built on claude-comp-lib (vendored).",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "claude-comp-lib": "file:./vendor/claude-comp-lib",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.7.0",
+    "sass": "^1.108.2",
+    "typescript": "~5.6.3",
+    "vite": "^6.4.6"
+  }
+}

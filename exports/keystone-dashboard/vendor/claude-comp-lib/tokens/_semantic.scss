@@ -1,0 +1,133 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Tier 2 · Semantic tokens
+//
+// Name a value by its *purpose* ("the color of secondary text"), not its look.
+// Every theme maps the same set of names to primitives, so switching themes
+// is just swapping which map gets emitted. Components consume only these.
+// ─────────────────────────────────────────────────────────────────────────────
+@use 'sass:color';
+@use 'sass:map';
+@use 'primitives' as p;
+
+@function _alpha($c, $a) {
+  @return color.change($c, $alpha: $a);
+}
+
+$light: (
+  // Backgrounds
+  'color-bg-canvas': p.swatch('neutral', 50),
+  'color-bg-surface': p.swatch('neutral', 0),
+  'color-bg-subtle': p.swatch('neutral', 100),
+  'color-bg-muted': p.swatch('neutral', 200),
+  'color-bg-inverse': p.swatch('neutral', 900),
+  'color-overlay': _alpha(p.swatch('neutral', 950), 0.5),
+
+  // Text
+  'color-text-primary': p.swatch('neutral', 900),
+  'color-text-secondary': p.swatch('neutral', 600),
+  'color-text-tertiary': p.swatch('neutral', 500),
+  'color-text-disabled': p.swatch('neutral', 400),
+  'color-text-inverse': p.swatch('neutral', 0),
+  'color-text-on-accent': p.swatch('neutral', 0),
+  'color-text-link': p.swatch('blue', 700),
+
+  // Borders
+  'color-border-subtle': p.swatch('neutral', 200),
+  'color-border-default': p.swatch('neutral', 300),
+  'color-border-strong': p.swatch('neutral', 400),
+
+  // Form controls
+  'color-control-bg': p.swatch('neutral', 0),
+  'color-control-bg-disabled': p.swatch('neutral', 100),
+  'color-control-border': p.swatch('neutral', 300),
+  'color-control-border-hover': p.swatch('neutral', 400),
+  'color-control-track': p.swatch('neutral', 300),
+  'color-control-thumb': p.swatch('neutral', 0),
+
+  // Accent (brand / primary action)
+  'color-accent': p.swatch('blue', 600),
+  'color-accent-hover': p.swatch('blue', 700),
+  'color-accent-active': p.swatch('blue', 800),
+  'color-accent-subtle': p.swatch('blue', 50),
+  'color-accent-text': p.swatch('blue', 700),
+
+  // Status
+  'color-danger': p.swatch('red', 600),
+  'color-danger-hover': p.swatch('red', 700),
+  'color-danger-active': p.swatch('red', 800),
+  'color-danger-subtle': p.swatch('red', 50),
+  'color-danger-text': p.swatch('red', 700),
+  'color-success': p.swatch('green', 600),
+  'color-success-subtle': p.swatch('green', 50),
+  'color-success-text': p.swatch('green', 700),
+  'color-warning': p.swatch('amber', 500),
+  'color-warning-subtle': p.swatch('amber', 50),
+  'color-warning-text': p.swatch('amber', 800),
+
+  // Focus
+  'color-focus-ring': p.swatch('blue', 500),
+  'color-focus-halo': _alpha(p.swatch('blue', 500), 0.25),
+  'color-danger-halo': _alpha(p.swatch('red', 500), 0.25),
+);
+
+$dark: (
+  'color-bg-canvas': p.swatch('neutral', 950),
+  'color-bg-surface': p.swatch('neutral', 900),
+  'color-bg-subtle': p.swatch('neutral', 800),
+  'color-bg-muted': p.swatch('neutral', 700),
+  'color-bg-inverse': p.swatch('neutral', 50),
+  'color-overlay': _alpha(#000000, 0.6),
+
+  'color-text-primary': p.swatch('neutral', 50),
+  'color-text-secondary': p.swatch('neutral', 300),
+  'color-text-tertiary': p.swatch('neutral', 400),
+  'color-text-disabled': p.swatch('neutral', 600),
+  'color-text-inverse': p.swatch('neutral', 900),
+  'color-text-on-accent': p.swatch('neutral', 0),
+  'color-text-link': p.swatch('blue', 400),
+
+  'color-border-subtle': p.swatch('neutral', 800),
+  'color-border-default': p.swatch('neutral', 700),
+  'color-border-strong': p.swatch('neutral', 600),
+
+  'color-control-bg': p.swatch('neutral', 900),
+  'color-control-bg-disabled': p.swatch('neutral', 800),
+  'color-control-border': p.swatch('neutral', 700),
+  'color-control-border-hover': p.swatch('neutral', 500),
+  'color-control-track': p.swatch('neutral', 600),
+  'color-control-thumb': p.swatch('neutral', 0),
+
+  'color-accent': p.swatch('blue', 600),
+  'color-accent-hover': p.swatch('blue', 500),
+  'color-accent-active': p.swatch('blue', 400),
+  'color-accent-subtle': _alpha(p.swatch('blue', 500), 0.15),
+  'color-accent-text': p.swatch('blue', 300),
+
+  'color-danger': p.swatch('red', 600),
+  'color-danger-hover': p.swatch('red', 500),
+  'color-danger-active': p.swatch('red', 400),
+  'color-danger-subtle': _alpha(p.swatch('red', 500), 0.15),
+  'color-danger-text': p.swatch('red', 300),
+  'color-success': p.swatch('green', 500),
+  'color-success-subtle': _alpha(p.swatch('green', 500), 0.15),
+  'color-success-text': p.swatch('green', 300),
+  'color-warning': p.swatch('amber', 400),
+  'color-warning-subtle': _alpha(p.swatch('amber', 400), 0.15),
+  'color-warning-text': p.swatch('amber', 300),
+
+  'color-focus-ring': p.swatch('blue', 400),
+  'color-focus-halo': _alpha(p.swatch('blue', 400), 0.35),
+  'color-danger-halo': _alpha(p.swatch('red', 400), 0.35),
+);
+
+// Every theme must define exactly the same token names.
+@each $key in map.keys($light) {
+  @if not map.has-key($dark, $key) {
+    @error "Dark theme is missing semantic token `#{$key}`.";
+  }
+}
+@each $key in map.keys($dark) {
+  @if not map.has-key($light, $key) {
+    @error "Dark theme defines unknown semantic token `#{$key}`.";
+  }
+}
