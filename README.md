@@ -12,10 +12,13 @@ React + TypeScript component library styled with SCSS design tokens, showcased i
 
 ## Components
 
-`Button` · `Input` · `TextArea` · `Select` · `Checkbox` · `RadioGroup` / `Radio` · `Switch` · `FormField` / `Label` · `PageLayout`
+`Button` · `Input` · `TextArea` · `Select` · `Checkbox` · `RadioGroup` / `Radio` · `Switch` · `FormField` / `Label` · `Badge` · `Progress` · `Card` / `StatCard` · `DataTable` · `PageLayout` · `AppShell` / `Sidebar` / `Navbar`
 
 - `FormField` wires label, hint and error to the control inside it (`id`, `aria-describedby`, `aria-invalid`, `required`, `disabled`) through context.
 - `PageLayout` has a `header` slot, a body (`children`), an optional `footer`, a `maxWidth`, an optional sticky header, and a skip link.
+- `AppShell` frames an app with a `Sidebar` (pinned from 1024px, an off-canvas drawer below) and a sticky `Navbar`, which shows the drawer toggle on small screens.
+- `DataTable` does client-side search, dropdown filters, column sorting, row selection with bulk actions, and pagination.
+- **Examples/Construction Dashboard** in Storybook puts these together into a full page.
 - Every control uses `forwardRef` and passes through its native HTML attributes.
 
 ## Design tokens
