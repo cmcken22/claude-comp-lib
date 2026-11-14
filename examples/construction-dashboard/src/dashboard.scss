@@ -318,6 +318,46 @@
   border-radius: token('radius-xl');
   background: token('color-bg-surface');
 
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  transition-property: transform, border-color, box-shadow, background-color;
+  transition-duration: token('duration-slow');
+  transition-timing-function: token('easing-standard');
+
+  // Soft accent glow that follows the top edge on hover.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120% 80% at 0% 0%, #{token('color-accent-subtle')}, transparent 60%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity token('duration-slow') token('easing-standard');
+  }
+
+  > * { position: relative; }
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: token('color-border-strong');
+    background: token('color-bg-subtle');
+    box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px #{token('color-accent-subtle')};
+
+    &::before { opacity: 1; }
+    .cd-stat__icon { background: token('color-accent'); color: token('color-text-on-accent'); transform: rotate(-6deg) scale(1.08); }
+    .cd-stat__label { color: token('color-text-primary'); }
+    .cd-spark__line { stroke-width: 2.25; }
+    .cd-spark__dot { r: 4; }
+    .cd-spark__area { filter: brightness(1.5); }
+      .cd-pill, .cd-delta { filter: brightness(1.25); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: 0ms;
+    &:hover { transform: none; .cd-stat__icon { transform: none; } }
+  }
+
   &__head {
     display: flex;
     align-items: center;
@@ -325,7 +365,7 @@
     gap: token('space-2');
   }
 
-  &__label { color: token('color-text-secondary'); @include text('sm', 'medium'); }
+  &__label { color: token('color-text-secondary'); @include text('sm', 'medium'); @include transition(color); }
 
   &__icon {
     display: grid;
@@ -335,6 +375,7 @@
     border-radius: token('radius-md');
     background: token('color-bg-subtle');
     color: token('color-text-tertiary');
+    @include transition(background-color, color, transform);
   }
 
   &__row {
@@ -409,7 +450,9 @@
 
   &__area { fill: token('color-accent-subtle'); stroke: none; }
   &__line { fill: none; stroke: token('color-accent-text'); stroke-width: 1.75; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
-  &__dot { fill: token('color-accent-text'); stroke: token('color-bg-surface'); stroke-width: 2; }
+  &__dot { fill: token('color-accent-text'); stroke: token('color-bg-surface'); stroke-width: 2; transition: r token('duration-slow') token('easing-emphasized'); }
+  &__line { transition: stroke-width token('duration-slow') token('easing-standard'); }
+  &__area { transition: filter token('duration-slow') token('easing-standard'); }
 
   &--success {
     .cd-spark__area { fill: token('color-success-subtle'); }
