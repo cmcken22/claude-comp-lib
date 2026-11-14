@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Button, Checkbox, Input, Select, Switch } from '../../../src';
 import { PHASES, PROJECTS, SECTORS, STATUSES, TODAY, type Project, type Status } from './data';
 import { daysBetween, money, shortDate, variancePct } from './format';
+import { CommentCell, useOpenThreadCount } from './comments';
 import { Icons } from './icons';
 
 type SortKey = 'name' | 'status' | 'phase' | 'progress' | 'budget' | 'variance' | 'due' | 'rfis';
@@ -69,6 +70,7 @@ function DueCell({ p }: { p: Project }) {
 }
 
 export function ProjectTable() {
+  const openThreads = useOpenThreadCount();
   const [status, setStatus] = useState<Status | 'all'>('all');
   const [query, setQuery] = useState('');
   const [sector, setSector] = useState('all');
@@ -76,7 +78,7 @@ export function ProjectTable() {
   const [overOnly, setOverOnly] = useState(false);
   const [sort, setSort] = useState<{ key: SortKey; dir: SortDir }>({ key: 'status', dir: 'asc' });
   // Infinite scroll: rows load in batches as the bottom of the list comes into view.
-  const BATCH = 6;
+  const BATCH = 20;
   const [visible, setVisible] = useState(BATCH);
   const [loading, setLoading] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -159,7 +161,10 @@ export function ProjectTable() {
       <div className="cd-panel__head">
         <div>
           <h2 id="projects-heading" className="cd-panel__title">Projects</h2>
-          <p className="cd-panel__sub">Contract value, schedule and cost forecast for every job in the portfolio.</p>
+          <p className="cd-panel__sub">
+            Contract value, schedule and cost forecast for every job in the portfolio.{' '}
+            <span className="cd-panel__hint"><Icons.Comment width={13} height={13} /> {openThreads ? `${openThreads} cell${openThreads > 1 ? 's' : ''} with open comments` : 'Hover a cell to comment on it'}</span>
+          </p>
         </div>
         <div className="cd-tabs" role="tablist" aria-label="Filter by status">
           {(['all', ...STATUSES] as const).map((s) => (
@@ -248,39 +253,39 @@ export function ProjectTable() {
                   <td className="cd-check">
                     <Checkbox aria-label={`Select ${p.name}`} checked={isSel} onChange={() => toggleOne(p.id)} />
                   </td>
-                  <td>
+                  <CommentCell cell={`${p.id}|name`} label={`${p.name} · Project`}>
                     <div className="cd-stack cd-project">
                       <span className="cd-project__name">{p.name}</span>
                       <small>{p.id} · {p.sector} · {p.city}</small>
                     </div>
-                  </td>
-                  <td><span className={`cd-pill cd-pill--${STATUS_TONE[p.status]}`}>{p.status}</span></td>
-                  <td><PhaseMeter phase={p.phase} /></td>
-                  <td>
+                  </CommentCell>
+                  <CommentCell cell={`${p.id}|status`} label={`${p.name} · Status`}><span className={`cd-pill cd-pill--${STATUS_TONE[p.status]}`}>{p.status}</span></CommentCell>
+                  <CommentCell cell={`${p.id}|phase`} label={`${p.name} · Phase`}><PhaseMeter phase={p.phase} /></CommentCell>
+                  <CommentCell cell={`${p.id}|progress`} label={`${p.name} · Complete`}>
                     <div className="cd-progress" aria-label={`${p.progress}% complete`}>
                       <span className="cd-progress__track"><span className={`cd-progress__bar cd-progress__bar--${STATUS_TONE[p.status]}`} style={{ width: `${p.progress}%` }} /></span>
                       <span className="cd-progress__pct">{p.progress}%</span>
                     </div>
-                  </td>
-                  <td className="cd-num">{money(p.budget)}</td>
-                  <td className="cd-num">
+                  </CommentCell>
+                  <CommentCell cell={`${p.id}|budget`} label={`${p.name} · Contract`} className="cd-num">{money(p.budget)}</CommentCell>
+                  <CommentCell cell={`${p.id}|variance`} label={`${p.name} · Forecast var.`} className="cd-num">
                     <div className="cd-stack cd-stack--end">
                       <span className={v > 3 ? 'cd-text-danger' : v > 0.5 ? 'cd-text-warning' : 'cd-text-success'}>
                         {v > 0 ? '+' : v < 0 ? '−' : ''}{Math.abs(v).toFixed(1)}%
                       </span>
                       <small>{v >= 0 ? '+' : '−'}{money(Math.abs(p.forecast - p.budget), 2)}</small>
                     </div>
-                  </td>
-                  <td><DueCell p={p} /></td>
-                  <td className="cd-num">
+                  </CommentCell>
+                  <CommentCell cell={`${p.id}|due`} label={`${p.name} · Substantial completion`}><DueCell p={p} /></CommentCell>
+                  <CommentCell cell={`${p.id}|rfis`} label={`${p.name} · Open RFIs`} className="cd-num">
                     <span className={p.rfis >= 15 ? 'cd-rfi cd-rfi--high' : 'cd-rfi'}>{p.rfis}</span>
-                  </td>
-                  <td>
+                  </CommentCell>
+                  <CommentCell cell={`${p.id}|manager`} label={`${p.name} · Project manager`}>
                     <span className="cd-person">
                       <span className="cd-avatar cd-avatar--sm">{p.manager.split(' ').map((n) => n[0]).join('')}</span>
                       {p.manager}
                     </span>
-                  </td>
+                  </CommentCell>
                 </tr>
               );
             })}

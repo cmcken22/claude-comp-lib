@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Button, Input, PageLayout, Select } from '../../../src';
+import { PROJECTS } from './data';
 import { Icons } from './icons';
 import { ProjectTable } from './ProjectTable';
 import { Skyline } from './Skyline';
+import { CommentsProvider } from './comments';
+import { Field } from './Field';
+import { Fireworks } from './Fireworks';
 import { StatCards } from './StatCards';
 
 const NAV = [
   { id: 'overview', label: 'Overview', icon: Icons.Dashboard },
-  { id: 'projects', label: 'Projects', icon: Icons.Projects, count: 18 },
+  { id: 'projects', label: 'Projects', icon: Icons.Projects, count: PROJECTS.filter((p) => p.status !== 'Completed').length },
   { id: 'schedule', label: 'Schedule', icon: Icons.Calendar },
   { id: 'crews', label: 'Crews', icon: Icons.Crew },
   { id: 'equipment', label: 'Equipment', icon: Icons.Equipment },
@@ -134,6 +138,8 @@ export function App() {
 
   return (
     <div className={`cd-app${collapsed ? ' cd-app--collapsed' : ''}`} data-theme="dark">
+      <Field />
+      <Fireworks />
       <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} collapsed={collapsed} onToggleCollapse={() => setCollapsed((c) => !c)} />
       <PageLayout
         className="cd-page"
@@ -155,7 +161,9 @@ export function App() {
           </div>
           </div>
           <StatCards />
-          <ProjectTable />
+          <CommentsProvider>
+            <ProjectTable />
+          </CommentsProvider>
         </div>
       </PageLayout>
     </div>

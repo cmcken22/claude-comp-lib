@@ -852,3 +852,180 @@
     .cd-user { justify-content: center; padding-inline: 0; }
   }
 }
+
+// ── Interactive background ─────────────────────────────────────────────────
+// The canvas sits under everything; page chrome is translucent so it shows through.
+.cd-field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.cd-app {
+  position: relative;
+  isolation: isolate;
+  background-color: transparent;
+
+  > .cd-page { position: relative; z-index: 1; background: transparent; }
+}
+
+.cd-page .ds-page-layout__header {
+  background: color-mix(in srgb, #{token('color-bg-surface')} 72%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.cd-sidebar { background: color-mix(in srgb, #{token('color-bg-surface')} 82%, transparent); backdrop-filter: blur(12px); }
+.cd-stat, .cd-panel { background: color-mix(in srgb, #{token('color-bg-surface')} 88%, transparent); backdrop-filter: blur(6px); }
+.cd-table thead th { background: token('color-bg-surface'); }
+.cd-hero { background: linear-gradient(180deg, color-mix(in srgb, #{token('color-bg-canvas')} 70%, transparent) 0%, color-mix(in srgb, #{token('color-bg-surface')} 85%, transparent) 100%); }
+
+// ── Cell comments ──────────────────────────────────────────────────────────
+.cd-panel__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: token('space-1');
+  color: token('color-text-secondary');
+  white-space: nowrap;
+}
+
+.cd-table td.cd-ccell { position: relative; }
+
+.cd-cmt-btn {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  display: grid;
+  place-items: center;
+  min-width: 1.375rem;
+  height: 1.375rem;
+  padding: 0 0.25rem;
+  border: 1px solid token('color-border-default');
+  border-radius: token('radius-full');
+  background: token('color-bg-surface');
+  color: token('color-text-secondary');
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.85);
+  @include transition(opacity, transform, background-color, color);
+  @include focus-visible(1px);
+
+  &:focus-visible { opacity: 1; transform: none; }
+  &:hover { background: token('color-accent'); border-color: token('color-accent'); color: token('color-text-on-accent'); }
+
+  &__count { @include text('xs', 'semibold', 'tight'); font-size: 0.6875rem; }
+}
+
+.cd-ccell:hover .cd-cmt-btn,
+.cd-ccell--active .cd-cmt-btn { opacity: 1; transform: none; }
+
+// Cells with open comments: amber corner flag, like a spreadsheet note.
+.cd-ccell--has {
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-style: solid;
+    border-width: 0 10px 10px 0;
+    border-color: transparent token('color-warning') transparent transparent;
+  }
+
+  .cd-cmt-btn {
+    opacity: 1;
+    transform: none;
+    top: 0.5rem;
+    right: 0.5rem;
+    border-color: transparent;
+    background: token('color-warning-subtle');
+    color: token('color-warning-text');
+  }
+}
+
+.cd-ccell--resolved::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-style: solid;
+  border-width: 0 8px 8px 0;
+  border-color: transparent token('color-border-strong') transparent transparent;
+}
+
+.cd-ccell--active { box-shadow: inset 0 0 0 2px token('color-accent'); }
+
+.cd-pop {
+  position: fixed;
+  z-index: token('z-index-modal');
+  display: grid;
+  gap: token('space-3');
+  width: min(22rem, calc(100vw - 24px));
+  grid-template-columns: minmax(0, 1fr);
+  > * { min-width: 0; }
+  .ds-textarea { width: 100%; min-width: 0; }
+  max-height: min(28rem, calc(100vh - 24px));
+  padding: token('space-3');
+  overflow-y: auto;
+  border: 1px solid token('color-border-default');
+  border-radius: token('radius-xl');
+  background: token('color-bg-surface');
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.75);
+  color: token('color-text-primary');
+  animation: cd-pop-in token('duration-slow') token('easing-standard');
+  @include text('sm');
+  @media (prefers-reduced-motion: reduce) { animation: none; }
+
+  &__head { display: flex; align-items: center; gap: token('space-2'); }
+  &__icon {
+    display: grid; place-items: center; flex: none;
+    width: 1.5rem; height: 1.5rem;
+    border-radius: token('radius-md');
+    background: token('color-warning-subtle');
+    color: token('color-warning-text');
+  }
+  &__title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; @include text('sm', 'semibold'); }
+
+  &__list { display: grid; gap: token('space-3'); margin: 0; padding: 0; list-style: none; }
+  &__item {
+    display: flex; gap: token('space-2');
+    &.is-resolved { opacity: 0.55; }
+  }
+  &__body {
+    flex: 1; min-width: 0;
+    p { margin: token('space-0-5') 0 0; color: token('color-text-secondary'); white-space: pre-wrap; overflow-wrap: anywhere; }
+  }
+  &__meta {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: token('space-2');
+    strong { @include text('sm', 'semibold'); }
+    span { color: token('color-text-tertiary'); @include text('xs'); }
+  }
+  &__tag { padding: 0 token('space-1-5'); border-radius: token('radius-full'); background: token('color-bg-muted'); }
+  &__delete, &__toggle {
+    padding: 0; border: 0; background: none; font: inherit; cursor: pointer;
+    color: token('color-text-tertiary');
+    @include text('xs');
+    @include focus-visible(1px);
+    &:hover { color: token('color-text-primary'); text-decoration: underline; }
+  }
+  &__delete { margin-left: auto; }
+  &__toggle { justify-self: start; }
+  &__empty { margin: 0; color: token('color-text-tertiary'); }
+  &__error { margin: 0; color: token('color-danger-text'); @include text('xs'); }
+  &__form { display: grid; gap: token('space-2'); }
+  &__actions { display: flex; align-items: center; gap: token('space-2'); }
+  &__hint { margin-left: auto; color: token('color-text-tertiary'); @include text('xs'); }
+}
+
+@keyframes cd-pop-in { from { opacity: 0; transform: translateY(-4px) scale(0.98); } }
+
+// Keep the count badge clear of right-aligned numbers.
+.cd-table td.cd-ccell--has { padding-right: 2.25rem; }
+.cd-table td.cd-ccell--has:last-child { padding-right: 2.25rem; }
+.cd-ccell--has .cd-cmt-btn { top: 50%; right: 0.5rem; transform: translateY(-50%); }
+
+.cd-fireworks {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  pointer-events: none;
+}

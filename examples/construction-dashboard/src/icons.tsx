@@ -30,6 +30,7 @@ export const Icons = {
   ChevronRight: icon(<path d="M9 6l6 6-6 6" />),
   Sort: icon(<path d="M8 9l4-4 4 4M8 15l4 4 4-4" />),
   Warning: icon(<><path d="M12 3l10 18H2z" /><path d="M12 10v4M12 17.5v.01" /></>),
+  Comment: icon(<path d="M21 12a8 8 0 01-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1121 12z" />),
   Up: icon(<path d="M7 17L17 7M9 7h8v8" />),
   Down: icon(<path d="M7 7l10 10M17 9v8H9" />),
 };
