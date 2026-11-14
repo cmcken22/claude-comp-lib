@@ -1,0 +1,25 @@
+{
+  "name": "ironbridge-construction-dashboard",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "vendor:update": "node scripts/update-vendor.mjs"
+  },
+  "dependencies": {
+    "claude-comp-lib": "file:./vendor/claude-comp-lib",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.7.0",
+    "typescript": "~5.6",
+    "vite": "^6.4.6"
+  }
+}

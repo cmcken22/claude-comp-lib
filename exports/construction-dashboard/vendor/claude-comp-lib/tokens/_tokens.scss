@@ -1,0 +1,41 @@
+// Aggregates primitives + semantic themes into the flat maps that get emitted
+// as CSS custom properties (see styles/_theme.scss) and validated by token().
+@use 'sass:list';
+@use 'sass:map';
+@use 'primitives' as p;
+@use 'semantic' as s;
+
+// Scales that are theme-independent and emitted as `--ds-<group>-<key>`.
+$_scales: (
+  'space': p.$space,
+  'radius': p.$radius,
+  'font-family': p.$font-family,
+  'font-size': p.$font-size,
+  'font-weight': p.$font-weight,
+  'line-height': p.$line-height,
+  'shadow': p.$shadow,
+  'duration': p.$duration,
+  'easing': p.$easing,
+  'z-index': p.$z-index,
+  'control-height': p.$control-height,
+  'container': p.$container,
+);
+
+@function _flatten($groups) {
+  $out: ();
+  @each $group, $scale in $groups {
+    @each $key, $value in $scale {
+      $out: map.merge($out, ('#{$group}-#{$key}': $value));
+    }
+  }
+  @return $out;
+}
+
+$scale-tokens: _flatten($_scales);
+
+$themes: (
+  'light': s.$light,
+  'dark': s.$dark,
+);
+
+$token-names: list.join(map.keys($scale-tokens), map.keys(s.$light));

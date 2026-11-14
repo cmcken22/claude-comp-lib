@@ -1,0 +1,24 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'config' as c;
+@use 'primitives' as p;
+@use 'tokens' as t;
+
+/// Reference a design token as a CSS custom property.
+/// Fails the build if the token does not exist, so typos never ship.
+/// @example scss
+///   color: token('color-text-primary'); // → var(--ds-color-text-primary)
+@function token($name) {
+  @if not list.index(t.$token-names, $name) {
+    @error "Unknown design token `#{$name}`.";
+  }
+  @return var(--#{c.$prefix}-#{$name});
+}
+
+/// Compile-time breakpoint value (media queries can't use CSS variables).
+@function breakpoint($name) {
+  @if not map.has-key(p.$breakpoints, $name) {
+    @error "Unknown breakpoint `#{$name}`.";
+  }
+  @return map.get(p.$breakpoints, $name);
+}

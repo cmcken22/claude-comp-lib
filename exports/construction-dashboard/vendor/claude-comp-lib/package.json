@@ -1,0 +1,23 @@
+{
+  "name": "claude-comp-lib",
+  "version": "0.1.0",
+  "description": "Prebuilt copy of the claude-comp-lib component library, vendored into this project.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./tokens": "./tokens/_index.scss"
+  },
+  "sideEffects": ["**/*.css", "**/*.scss"],
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  }
+}

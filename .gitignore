@@ -3,3 +3,6 @@ dist
 storybook-static
 *.log
 .DS_Store
+
+# The export bundles a prebuilt copy of the library.
+!exports/*/vendor/claude-comp-lib/dist
