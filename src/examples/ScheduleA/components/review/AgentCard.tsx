@@ -45,11 +45,7 @@ export function AgentCard({ agent, run, outdated, disabled, onRun }: AgentCardPr
           <div className="sa-progress"><span style={{ width: `${((stage + 1) / info.stages.length) * 100}%` }} /></div>
           <span className="sa-muted">{info.stages[stage]}…</span>
         </div>
-      ) : (
-        <ul className="sa-agent__checks">
-          {info.checks.map((c) => <li key={c}>{c}</li>)}
-        </ul>
-      )}
+      ) : null}
 
       {run.status === 'failed' && (
         <p className="sa-banner sa-banner--error" role="alert"><AlertIcon size={16} /> {run.error}</p>

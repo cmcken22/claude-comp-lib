@@ -1,8 +1,8 @@
-import { AGENTS, sectionName } from '../../config';
+import { AGENTS, SEVERITY, sectionName } from '../../config';
 import { formatRange } from '../../lib/format';
 import { sortFindings } from '../../lib/review';
 import type { AgentId, Finding } from '../../types';
-import { SeverityBadge, StatusBadge } from '../common/Badges';
+import { StatusBadge } from '../common/Badges';
 
 export interface FindingTableProps {
   agent: AgentId;
@@ -34,7 +34,7 @@ export function FindingTable({ agent, findings, selectedId, onOpen }: FindingTab
         <tbody>
           {rows.map((f) => (
             <tr key={f.id} className={`${f.status !== 'open' ? 'sa-table__row--muted' : ''}${selectedId === f.id ? ' sa-table__row--current' : ''}`}>
-              <td><SeverityBadge severity={f.severity} /></td>
+              <td><span className={`sa-sev sa-sev--${f.severity}`}>{SEVERITY[f.severity].label}</span></td>
               <th scope="row">
                 <button type="button" className="sa-table__link" onClick={() => onOpen(f.id)}>
                   <span className="sa-mono">{f.id}</span> {f.title}
@@ -43,7 +43,7 @@ export function FindingTable({ agent, findings, selectedId, onOpen }: FindingTab
               <td className="sa-nowrap">{sectionName(f.sectionKey)}</td>
               {gap && <td className="sa-num sa-mono">{f.confidence}%</td>}
               {gap && <td className="sa-num sa-mono sa-nowrap">{formatRange(f.priceLow!, f.priceHigh!)}</td>}
-              <td><StatusBadge status={f.status} /></td>
+              <td>{f.status === 'open' ? <span className="sa-muted">Open</span> : <StatusBadge status={f.status} />}</td>
             </tr>
           ))}
         </tbody>

@@ -10,6 +10,8 @@ export interface AppShellProps {
   projectNumber: string;
   userName: string;
   activeNavId: string;
+  /** Extra controls at the start of the navbar's action area. */
+  extraActions?: ReactNode;
   children: ReactNode;
 }
 
@@ -34,10 +36,11 @@ const sections: SidebarSection[] = sampleSections.map((s) =>
 );
 
 /** Global Navbar on top, Sidebar on the left (a drawer on narrow screens), scrolling content on the right. */
-export function AppShell({ projectName, projectNumber, userName, activeNavId, children }: AppShellProps) {
+export function AppShell({ projectName, projectNumber, userName, activeNavId, extraActions, children }: AppShellProps) {
   const [navOpen, setNavOpen] = useState(false);
   // At lg and up the sidebar is docked; the menu button collapses it instead of opening a drawer.
-  const [collapsed, setCollapsed] = useState(false);
+  // Starts collapsed so the scope gets the width; the menu button brings the navigation back.
+  const [collapsed, setCollapsed] = useState(true);
   const isDocked = () => typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches;
   const [activeNav, setActiveNav] = useState(activeNavId);
 
@@ -51,6 +54,7 @@ export function AppShell({ projectName, projectNumber, userName, activeNavId, ch
         onMenuClick={() => (isDocked() ? setCollapsed((c) => !c) : setNavOpen((o) => !o))}
         actions={
           <>
+            {extraActions}
             <NavbarIconButton label="Notifications" badge={2}>
               <BellIcon />
             </NavbarIconButton>

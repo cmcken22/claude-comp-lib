@@ -42,7 +42,7 @@ export function StepFooter() {
     },
     review: !ran
       ? { hint: running ? 'Agents are reviewing the draft…' : 'Run both agents to check the draft for conflicts and likely gaps.', label: 'Run both agents', icon: <SparkleIcon size={16} />, disabled: running || !can.edit, run: () => { (['language', 'gap'] as const).forEach((a) => ws.runs[a].status !== 'complete' && runAgent(a)); } }
-      : { hint: counts.critical ? `${counts.critical} critical finding open. Resolve it in the review panel, or continue and acknowledge it on export.` : `${counts.open} findings open, none critical.`, label: 'Continue to Finalize', run: () => go('export') },
+      : { hint: counts.critical ? `${counts.critical} critical finding open. Open it in the list below to resolve it, or continue and acknowledge it on export.` : `${counts.open} findings open, none critical.`, label: 'Continue to Finalize', run: () => go('export') },
     export: {
       hint: ws.confirmed.includes('export') ? `Exported ${ws.currentVersion}. You can export again after changes.` : 'Preview the Schedule A, then export or attach it to the requisition.',
       label: 'Preview and export',
@@ -56,7 +56,7 @@ export function StepFooter() {
   return (
     <div className="sa-step-footer" role="region" aria-label="Next step">
       <p className="sa-step-footer__hint">
-        <span className="sa-step-footer__count">Step {index + 1} of {STEPS.length} · Next step</span>
+        <span className="sa-step-footer__count">Step {index + 1} of {STEPS.length}</span>
         {next.hint}
       </p>
       <div className="sa-step-footer__actions">

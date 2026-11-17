@@ -38,7 +38,7 @@ export function ReviewPanel({ inDrawer = false }: { inDrawer?: boolean }) {
           </button>
         </header>
       )}
-      <p className="sa-panel__disclaimer">Findings are recommendations from review agents. Nothing is added to the scope until a person inserts it.</p>
+      <p className="sa-panel__disclaimer">Recommendations only. Nothing changes the scope until you insert it.</p>
 
       {selected ? (
         <FindingDetail finding={selected} onBack={() => ui.openFinding(null)} />
@@ -53,8 +53,8 @@ export function ReviewPanel({ inDrawer = false }: { inDrawer?: boolean }) {
             </div>
           ) : visible.length === 0 ? (
             <div className="sa-empty-inline">
-              <p>No findings match these filters.</p>
-              {active && <Button size="sm" variant="ghost" onClick={reset}>Clear filters</Button>}
+              <p>{active ? 'No findings match these filters.' : 'No open findings. Nice work.'}</p>
+              <Button size="sm" variant="ghost" onClick={() => (active ? reset() : set('status', 'all'))}>{active ? 'Clear filters' : 'Show all findings'}</Button>
             </div>
           ) : (
             <ul className="sa-finding-list" aria-label={`${visible.length} findings`}>

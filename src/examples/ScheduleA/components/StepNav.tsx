@@ -26,18 +26,18 @@ export function StepNav() {
   const running = ws.runs.language.status === 'running' || ws.runs.gap.status === 'running';
 
   const state: Record<StepId, StepState> = {
-    details: { done: ws.confirmed.includes('details'), hint: ws.confirmed.includes('details') ? ws.meta.code : 'Confirm details' },
-    editor: { done: items > 0, hint: items ? `${ws.sections.length} sections · ${items} items` : 'Not started' },
-    references: { done: ws.confirmed.includes('references') && ws.selectedDocIds.length > 0, hint: `${ws.selectedDocIds.length} documents selected`, issues: ws.selectedDocIds.length ? undefined : 1, tone: 'warning' },
+    details: { done: ws.confirmed.includes('details'), hint: ws.confirmed.includes('details') ? 'Confirmed' : 'To confirm' },
+    editor: { done: items > 0, hint: items ? `${items} clauses` : 'Not started' },
+    references: { done: ws.confirmed.includes('references') && ws.selectedDocIds.length > 0, hint: `${ws.selectedDocIds.length} selected`, issues: ws.selectedDocIds.length ? undefined : 1, tone: 'warning' },
     review: {
       done: ran && counts.critical === 0,
-      hint: running ? 'Agents running…' : ran ? `${counts.open} open of ${counts.total}` : 'Agents not run',
-      issues: counts.critical + counts.high || undefined,
+      hint: running ? 'Running…' : ran ? `${counts.open} open` : 'Not run',
+      issues: counts.critical || undefined,
       tone: counts.critical ? 'critical' : 'warning',
     },
     export: {
       done: ws.confirmed.includes('export'),
-      hint: ws.confirmed.includes('export') ? `Exported ${ws.currentVersion}` : failing ? `${plural(failing, 'check')} outstanding` : 'Ready to export',
+      hint: ws.confirmed.includes('export') ? `Exported ${ws.currentVersion}` : failing ? `${plural(failing, 'check')} open` : 'Ready',
     },
   };
 
@@ -72,7 +72,7 @@ export function StepNav() {
                   <span className="sa-step__hint">{s.hint}</span>
                 </span>
                 {s.issues ? (
-                  <span className={`sa-step__issues sa-step__issues--${s.tone}`} aria-label={`${s.issues} unresolved issues`}>
+                  <span className={`sa-step__issues sa-step__issues--${s.tone}`} aria-label={`${s.issues} critical or blocking issues`}>
                     {s.issues}
                   </span>
                 ) : null}

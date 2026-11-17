@@ -1,4 +1,3 @@
-import { Chip } from '../../../../components/Chip';
 import { ArrowDownIcon, ArrowUpIcon, CopyIcon, EditIcon, FlagIcon, LibraryIcon, SparkleIcon, TrashIcon } from '../../icons';
 import type { ScopeItem } from '../../types';
 import { KindBadge } from '../common/Badges';
@@ -24,15 +23,15 @@ export function ScopeItemRow({ item, number, canEdit, isFirst, isLast, highlight
       <span className="sa-item__number">{number}</span>
       <div className="sa-item__body">
         <div className="sa-item__meta">
-          <KindBadge kind={item.kind} />
+          {item.kind !== 'inclusion' && <KindBadge kind={item.kind} />}
           {item.critical && (
             <span className="sa-critical-tag">
-              <FlagIcon size={12} /> Critical item
+              <FlagIcon size={12} /> Critical
             </span>
           )}
           {item.origin?.type === 'ai' && (
             <span className="sa-origin sa-origin--ai">
-              <SparkleIcon size={12} /> From AI recommendation {item.origin.ref}
+              <SparkleIcon size={12} /> AI suggestion {item.origin.ref}
             </span>
           )}
           {item.origin?.type === 'historical' && (
@@ -42,13 +41,7 @@ export function ScopeItemRow({ item, number, canEdit, isFirst, isLast, highlight
           )}
         </div>
         <p className="sa-item__text">{item.text}</p>
-        {item.tags.length > 0 && (
-          <div className="sa-item__tags">
-            {item.tags.map((t) => (
-              <Chip key={t} size="sm">{t}</Chip>
-            ))}
-          </div>
-        )}
+        {item.tags.length > 0 && <p className="sa-item__tags">{item.tags.join(' · ')}</p>}
       </div>
       {canEdit && (
         <div className="sa-item__actions" role="group" aria-label={`Actions for ${label}`}>

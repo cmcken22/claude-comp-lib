@@ -3,7 +3,7 @@ import { Select } from '../../../../components/Select';
 import { SECTION_CATALOG } from '../../config';
 import { useSA } from '../../hooks/context';
 import { countCritical, countItems } from '../../lib/scope';
-import { HistoryIcon, LibraryIcon } from '../../icons';
+import { LibraryIcon } from '../../icons';
 import { EmptyScope } from './EmptyScope';
 import { ScopeOverview } from './ScopeOverview';
 import { SectionCard } from './SectionCard';
@@ -36,11 +36,8 @@ export function ScopeEditorStep() {
                 <option key={m.key} value={m.key}>{m.name}</option>
               ))}
             </Select>
-            <Button variant="outline" size="sm" startIcon={<LibraryIcon size={16} />} onClick={() => ui.openLibrary(null)}>
+            <Button variant="ghost" size="sm" startIcon={<LibraryIcon size={16} />} onClick={() => ui.openLibrary(null)}>
               Clause library
-            </Button>
-            <Button variant="outline" size="sm" startIcon={<HistoryIcon size={16} />} disabled={!can.manageVersions} title={can.manageVersions ? undefined : 'Only Admins can create versions'} onClick={() => ui.setDialog('createVersion')}>
-              Create version
             </Button>
           </div>
         )}

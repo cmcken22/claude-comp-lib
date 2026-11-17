@@ -1,4 +1,5 @@
 import { AppShell } from './components/AppShell';
+import { RoleSwitcher } from './components/RoleSwitcher';
 import { Workbench } from './components/Workbench';
 import { CURRENT_USER } from './data/project';
 import { ScheduleAContext } from './hooks/context';
@@ -17,7 +18,7 @@ export function ScheduleA(props: ScheduleAProps) {
 
   return (
     <ScheduleAContext.Provider value={controller}>
-      <AppShell projectName={meta.projectName} projectNumber={meta.projectNumber} userName={CURRENT_USER.name} activeNavId="contracts-schedule-a">
+      <AppShell projectName={meta.projectName} projectNumber={meta.projectNumber} userName={CURRENT_USER.name} activeNavId="contracts-schedule-a" extraActions={<RoleSwitcher />}>
         <Workbench />
       </AppShell>
     </ScheduleAContext.Provider>

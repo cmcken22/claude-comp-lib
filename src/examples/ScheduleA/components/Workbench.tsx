@@ -30,8 +30,10 @@ const STEP_VIEWS: Record<StepId, () => JSX.Element> = {
 
 /** Header, step rail, active step and review panel, plus overlays. */
 export function Workbench() {
-  const { ui, toast } = useSA();
+  const { ws, ui, toast } = useSA();
   const StepView = STEP_VIEWS[ui.step];
+  // Findings sit beside the draft only while editing; the AI Review step shows them in full.
+  const showPanel = ui.step === 'editor' && ws.findings.length > 0;
 
   // New step starts at the top; a jump-to-section scrolls afterwards in SectionCard.
   useEffect(() => {
@@ -51,15 +53,17 @@ export function Workbench() {
   return (
     <div className="sa-page">
       <PageHeader />
-      <div className={`sa-workspace${ui.panelCollapsed ? ' sa-workspace--panel-collapsed' : ''}`}>
-        <StepNav />
+      <StepNav />
+      <div className={`sa-workspace${showPanel ? ' sa-workspace--with-panel' : ''}${ui.panelCollapsed ? ' sa-workspace--panel-collapsed' : ''}`}>
         <div className="sa-workspace__main" key={ui.step}>
           <StepView />
           <StepFooter />
         </div>
-        <div className="sa-workspace__panel">
-          <ReviewPanel />
-        </div>
+        {showPanel && (
+          <div className="sa-workspace__panel">
+            <ReviewPanel />
+          </div>
+        )}
       </div>
 
       <Drawer className="sa-review-drawer" open={ui.panelOpen} onClose={() => ui.setPanelOpen(false)} title="AI Review" icon={<SparkleIcon />} size="md">

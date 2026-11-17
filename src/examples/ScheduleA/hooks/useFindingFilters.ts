@@ -8,7 +8,8 @@ export interface FindingFilters {
   status: FindingStatus | 'all';
 }
 
-export const DEFAULT_FILTERS: FindingFilters = { agent: 'all', severity: 'all', status: 'all' };
+/** Open findings first: that is what needs action. */
+export const DEFAULT_FILTERS: FindingFilters = { agent: 'all', severity: 'all', status: 'open' };
 
 /** Filter state for the review panel, returning the sorted, filtered list. */
 export function useFindingFilters(findings: Finding[]) {
@@ -28,7 +29,7 @@ export function useFindingFilters(findings: Finding[]) {
   );
 
   const set = <K extends keyof FindingFilters>(key: K, value: FindingFilters[K]) => setFilters((f) => ({ ...f, [key]: value }));
-  const active = filters.agent !== 'all' || filters.severity !== 'all' || filters.status !== 'all';
+  const active = filters.agent !== 'all' || filters.severity !== 'all' || filters.status !== 'open';
 
   return { filters, set, reset: () => setFilters(DEFAULT_FILTERS), visible, active };
 }
