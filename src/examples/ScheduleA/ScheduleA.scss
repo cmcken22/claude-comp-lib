@@ -1104,3 +1104,12 @@ $panel-inline: 90rem;
     li { display: flex; align-items: center; gap: token('space-3'); @include text('sm', 'medium'); }
   }
 }
+
+.sa-step-next {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: token('space-3');
+  padding-top: token('space-2');
+}
