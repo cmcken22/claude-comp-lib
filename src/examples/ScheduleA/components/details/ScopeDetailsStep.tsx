@@ -2,9 +2,8 @@ import { Button } from '../../../../components/Button';
 import { useSA } from '../../hooks/context';
 import { ArrowRightIcon } from '../../icons';
 import { ScopeDetailsForm } from './ScopeDetailsForm';
-import { ScopeRegister } from './ScopeRegister';
 
-/** Step 1: select or create a scope and confirm its contract context. */
+/** Step 1: confirm the scope's contract context. Choosing a scope happens on the start screen. */
 export function ScopeDetailsStep() {
   const { ws, ui, dispatch } = useSA();
   const ready = Boolean(ws.meta.subcontractor && ws.meta.requisition.trim());
@@ -22,7 +21,6 @@ export function ScopeDetailsStep() {
         </div>
       </div>
       <ScopeDetailsForm />
-      <ScopeRegister />
     </div>
   );
 }
