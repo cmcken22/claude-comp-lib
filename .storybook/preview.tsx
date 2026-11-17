@@ -7,7 +7,7 @@ const preview: Preview = {
     backgrounds: { disable: true },
     controls: { expanded: true, matchers: { color: /(background|color)$/i } },
     options: {
-      storySort: { order: ['Introduction', 'Foundations', 'Components', 'Layout', 'Global'] },
+      storySort: { order: ['Introduction', 'Foundations', 'Components', 'Layout', 'Global', 'Examples'] },
     },
   },
 };
