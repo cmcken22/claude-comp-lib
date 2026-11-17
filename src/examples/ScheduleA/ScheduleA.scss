@@ -1105,11 +1105,24 @@ $panel-inline: 90rem;
   }
 }
 
-.sa-step-next {
+/* Pinned next-step bar */
+.sa-workspace__main { display: flex; flex-direction: column; gap: token('space-4'); }
+.sa-step-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: token('z-index-sticky');
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-end;
-  gap: token('space-3');
-  padding-top: token('space-2');
+  justify-content: space-between;
+  gap: token('space-3') token('space-4');
+  padding: token('space-3') token('space-4');
+  border: token('border-width-default') solid token('color-border-primary-default');
+  border-radius: token('radius-lg');
+  background: token('color-surface-default');
+  box-shadow: token('shadow-lg');
+
+  &__hint { flex: 1 1 18rem; min-width: 0; margin: 0; @include text('sm'); }
+  &__count { display: block; @include text('xs', 'semibold'); color: token('color-text-link-primary-default'); text-transform: uppercase; letter-spacing: 0.04em; }
+  &__actions { display: flex; flex-wrap: wrap; gap: token('space-2'); margin-left: auto; }
 }

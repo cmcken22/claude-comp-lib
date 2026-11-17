@@ -12,6 +12,7 @@ import { ExportDialog } from './export/ExportDialog';
 import { FinalizeStep } from './export/FinalizeStep';
 import { PageHeader } from './PageHeader';
 import { StartScreen } from './StartScreen';
+import { StepFooter } from './StepFooter';
 import { ReferenceDocsStep } from './references/ReferenceDocsStep';
 import { AiReviewStep } from './review/AiReviewStep';
 import { ReviewPanel } from './review/ReviewPanel';
@@ -54,6 +55,7 @@ export function Workbench() {
         <StepNav />
         <div className="sa-workspace__main" key={ui.step}>
           <StepView />
+          <StepFooter />
         </div>
         <div className="sa-workspace__panel">
           <ReviewPanel />

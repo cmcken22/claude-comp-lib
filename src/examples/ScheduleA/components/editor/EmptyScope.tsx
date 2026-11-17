@@ -34,9 +34,9 @@ export function EmptyScope() {
   return (
     <div className="sa-empty">
       <div className="sa-empty__intro">
-        <h2 className="sa-empty__title">Build the scope for {ws.meta.subcontractor}</h2>
+        <h2 className="sa-empty__title">Next: add clauses for {ws.meta.subcontractor}</h2>
         <p>
-          {ws.meta.code} · {ws.meta.trade} · Div {ws.meta.division}. Choose how to start. You can add, reorder and edit sections at any time.
+          {ws.meta.code} · {ws.meta.trade} · Div {ws.meta.division}. Pick one way to start below. You can add, reorder and edit sections afterwards, then continue to Reference Documents.
         </p>
       </div>
       <ul className="sa-empty__options">

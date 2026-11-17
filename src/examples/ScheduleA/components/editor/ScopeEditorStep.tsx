@@ -3,7 +3,7 @@ import { Select } from '../../../../components/Select';
 import { SECTION_CATALOG } from '../../config';
 import { useSA } from '../../hooks/context';
 import { countCritical, countItems } from '../../lib/scope';
-import { ArrowRightIcon, HistoryIcon, LibraryIcon } from '../../icons';
+import { HistoryIcon, LibraryIcon } from '../../icons';
 import { EmptyScope } from './EmptyScope';
 import { ScopeOverview } from './ScopeOverview';
 import { SectionCard } from './SectionCard';
@@ -58,18 +58,6 @@ export function ScopeEditorStep() {
         </div>
       )}
 
-      {ws.sections.length > 0 && (
-        <div className="sa-step-next">
-          <p className="sa-muted">
-            {countItems(ws.sections) > 0
-              ? 'Next, choose the documents the review agents will compare this scope against.'
-              : 'Add at least one clause to continue.'}
-          </p>
-          <Button endIcon={<ArrowRightIcon size={16} />} disabled={countItems(ws.sections) === 0} onClick={() => ui.setStep('references')}>
-            Continue to Reference Documents
-          </Button>
-        </div>
-      )}
     </div>
   );
 }

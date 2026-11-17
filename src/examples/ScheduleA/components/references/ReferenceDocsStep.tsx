@@ -3,12 +3,12 @@ import { Card } from '../../../../components/Card';
 import { DOC_TYPES } from '../../config';
 import { referenceDocs } from '../../data/project';
 import { useSA } from '../../hooks/context';
-import { AlertIcon, ArrowRightIcon, InfoIcon, UploadIcon } from '../../icons';
+import { AlertIcon, InfoIcon, UploadIcon } from '../../icons';
 import { DocGroup } from './DocGroup';
 
 /** Step 3: choose the documents the review agents compare against. */
 export function ReferenceDocsStep() {
-  const { ws, ui, can, dispatch, toast } = useSA();
+  const { ws, can, dispatch, toast } = useSA();
   const selected = referenceDocs.filter((d) => ws.selectedDocIds.includes(d.id));
   const hasStandard = selected.some((d) => d.type === 'Standard contract schedule');
   const hasHistory = selected.some((d) => d.type === 'Historical scope' || d.type === 'Change-order records');
@@ -24,7 +24,6 @@ export function ReferenceDocsStep() {
           <Button variant="outline" size="sm" startIcon={<UploadIcon size={16} />} disabled={!can.edit} onClick={() => toast.push('Uploading is not connected in this prototype.', 'info')}>
             Upload document
           </Button>
-          <Button size="sm" endIcon={<ArrowRightIcon size={16} />} onClick={() => { dispatch({ type: 'confirmStep', step: 'references' }); ui.setStep('review'); }}>Continue to AI Review</Button>
         </div>
       </div>
 
