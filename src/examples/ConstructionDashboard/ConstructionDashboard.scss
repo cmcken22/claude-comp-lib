@@ -139,12 +139,6 @@
   display: flex;
   flex-direction: column;
   gap: token('space-1');
-  padding: token('space-5');
-  border-top: token('border-width-thicker') solid token('color-border-primary-default');
-
-  &--warning {
-    border-top-color: token('color-border-warning');
-  }
 
   &__label {
     margin: 0;

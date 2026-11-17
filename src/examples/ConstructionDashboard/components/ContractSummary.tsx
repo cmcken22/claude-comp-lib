@@ -38,7 +38,6 @@ export function ContractSummary({ lines }: { lines: BudgetLine[] }) {
       <StatCard
         label="Pending changes"
         value={totals.pending}
-        tone="warning"
         footer={`${totals.pendingCount} change orders awaiting approval`}
       />
       <StatCard label="Original contract" value={totals.original} footer="Signed Jan 12, 2026" />

@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 import { Card } from '../../../components/Card';
-import { cx } from '../../../utils/cx';
 import { money } from '../lib/format';
 
 export interface StatCardProps {
@@ -8,12 +7,11 @@ export interface StatCardProps {
   /** Dollar amount. */
   value: number;
   footer?: ReactNode;
-  tone?: 'default' | 'warning';
 }
 
-/** One headline money figure with an optional supporting line. */
-export const StatCard = ({ label, value, footer, tone = 'default' }: StatCardProps) => (
-  <Card as="article" className={cx('cd-stat', tone === 'warning' && 'cd-stat--warning')}>
+/** One headline money figure with an optional supporting line, on the library's Card. */
+export const StatCard = ({ label, value, footer }: StatCardProps) => (
+  <Card as="article" padding="lg" className="cd-stat">
     <h2 className="cd-stat__label">{label}</h2>
     <p className="cd-stat__value">
       <span className="cd-stat__currency">$</span>
