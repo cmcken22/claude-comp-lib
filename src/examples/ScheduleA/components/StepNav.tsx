@@ -26,16 +26,19 @@ export function StepNav() {
   const running = ws.runs.language.status === 'running' || ws.runs.gap.status === 'running';
 
   const state: Record<StepId, StepState> = {
-    details: { done: Boolean(ws.meta.subcontractor && ws.meta.requisition), hint: ws.meta.code },
+    details: { done: ws.confirmed.includes('details'), hint: ws.confirmed.includes('details') ? ws.meta.code : 'Confirm details' },
     editor: { done: items > 0, hint: items ? `${ws.sections.length} sections · ${items} items` : 'Not started' },
-    references: { done: ws.selectedDocIds.length > 0, hint: `${ws.selectedDocIds.length} documents selected`, issues: ws.selectedDocIds.length ? undefined : 1, tone: 'warning' },
+    references: { done: ws.confirmed.includes('references') && ws.selectedDocIds.length > 0, hint: `${ws.selectedDocIds.length} documents selected`, issues: ws.selectedDocIds.length ? undefined : 1, tone: 'warning' },
     review: {
       done: ran && counts.critical === 0,
       hint: running ? 'Agents running…' : ran ? `${counts.open} open of ${counts.total}` : 'Agents not run',
       issues: counts.critical + counts.high || undefined,
       tone: counts.critical ? 'critical' : 'warning',
     },
-    export: { done: failing === 0, hint: failing ? `${plural(failing, 'check')} outstanding` : 'Ready to export' },
+    export: {
+      done: ws.confirmed.includes('export'),
+      hint: ws.confirmed.includes('export') ? `Exported ${ws.currentVersion}` : failing ? `${plural(failing, 'check')} outstanding` : 'Ready to export',
+    },
   };
 
   const onKeyDown = (e: KeyboardEvent, index: number) => {

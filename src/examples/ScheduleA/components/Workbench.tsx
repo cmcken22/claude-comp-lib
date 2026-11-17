@@ -11,6 +11,7 @@ import { ScopeEditorStep } from './editor/ScopeEditorStep';
 import { ExportDialog } from './export/ExportDialog';
 import { FinalizeStep } from './export/FinalizeStep';
 import { PageHeader } from './PageHeader';
+import { StartScreen } from './StartScreen';
 import { ReferenceDocsStep } from './references/ReferenceDocsStep';
 import { AiReviewStep } from './review/AiReviewStep';
 import { ReviewPanel } from './review/ReviewPanel';
@@ -34,7 +35,17 @@ export function Workbench() {
   // New step starts at the top; a jump-to-section scrolls afterwards in SectionCard.
   useEffect(() => {
     document.querySelector('.sa-main')?.scrollTo({ top: 0 });
-  }, [ui.step]);
+  }, [ui.step, ui.landing]);
+
+  if (ui.landing) {
+    return (
+      <div className="sa-page">
+        <StartScreen />
+        <NewScopeDrawer />
+        <Toasts toasts={toast.toasts} onDismiss={toast.dismiss} />
+      </div>
+    );
+  }
 
   return (
     <div className="sa-page">

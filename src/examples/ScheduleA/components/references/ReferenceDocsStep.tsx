@@ -24,7 +24,7 @@ export function ReferenceDocsStep() {
           <Button variant="outline" size="sm" startIcon={<UploadIcon size={16} />} disabled={!can.edit} onClick={() => toast.push('Uploading is not connected in this prototype.', 'info')}>
             Upload document
           </Button>
-          <Button size="sm" endIcon={<ArrowRightIcon size={16} />} onClick={() => ui.setStep('review')}>Continue to AI Review</Button>
+          <Button size="sm" endIcon={<ArrowRightIcon size={16} />} onClick={() => { dispatch({ type: 'confirmStep', step: 'references' }); ui.setStep('review'); }}>Continue to AI Review</Button>
         </div>
       </div>
 

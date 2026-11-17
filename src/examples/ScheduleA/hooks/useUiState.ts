@@ -11,8 +11,10 @@ export interface Highlight {
 }
 
 /** View state that is not part of the scope document itself. */
-export function useUiState(initialStep: StepId, initialDialog: Dialog) {
-  const [step, setStep] = useState<StepId>(initialStep);
+export function useUiState(initialStep: StepId | 'start', initialDialog: Dialog) {
+  const [step, setStep] = useState<StepId>(initialStep === 'start' ? 'details' : initialStep);
+  /** The project's scope list, shown before a scope is opened or created. */
+  const [landing, setLanding] = useState(initialStep === 'start');
   const [role, setRole] = useState<Role>('admin');
   const [dialog, setDialog] = useState<Dialog>(initialDialog);
   const [librarySectionKey, setLibrarySectionKey] = useState<string | null>(null);
@@ -40,6 +42,7 @@ export function useUiState(initialStep: StepId, initialDialog: Dialog) {
 
   return {
     step, setStep,
+    landing, setLanding,
     role, setRole,
     dialog, setDialog,
     librarySectionKey, openLibrary,

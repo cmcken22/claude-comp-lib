@@ -137,4 +137,6 @@ export interface Workspace {
   revision: number;
   /** Revision captured by the latest saved version. */
   versionRevision: number;
+  /** Steps the user has explicitly confirmed (details, references) or finished (export). */
+  confirmed: StepId[];
 }

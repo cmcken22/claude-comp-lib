@@ -543,13 +543,13 @@ $panel-inline: 90rem;
 
 .sa-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: token('space-4'); }
 
-.sa-table-wrap { overflow-x: auto; }
+.sa-table-wrap { position: relative; overflow-x: auto; }
 .sa-table {
   width: 100%;
   border-collapse: collapse;
   @include text('sm');
 
-  th, td { padding: token('space-3') token('space-4'); text-align: left; vertical-align: middle; border-top: token('border-width-default') solid token('color-border-default'); }
+  th, td { padding: token('space-3'); text-align: left; vertical-align: middle; border-top: token('border-width-default') solid token('color-border-default'); }
   thead th { @include text('xs', 'semibold'); color: token('color-text-secondary'); background: token('color-surface-neutral-light'); white-space: nowrap; }
   tbody th { font-weight: token('font-weight-regular'); }
   .sa-num { text-align: right; }
@@ -557,7 +557,7 @@ $panel-inline: 90rem;
   &__row--current { background: token('color-surface-primary-light-default'); }
   &__row--muted td, &__row--muted th { color: token('color-text-secondary'); }
   &__code { display: block; @include text('sm', 'semibold'); }
-  &__sub { display: block; @include text('xs'); color: token('color-text-secondary'); white-space: nowrap; }
+  &__sub { display: block; @include text('xs'); color: token('color-text-secondary'); }
   &__caption { padding: token('space-4'); text-align: left; font-family: token('font-family-title'); @include text('md', 'bold'); }
   &__link {
     padding: 0;
@@ -1058,4 +1058,49 @@ $panel-inline: 90rem;
 
 @media (prefers-reduced-motion: reduce) {
   .sa-skeleton, .sa-spinner, .sa-toast { animation: none; }
+}
+
+/* ───────────── Start screen ───────────── */
+.sa-crumb-btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: token('color-text-link-primary-default');
+  font: inherit;
+  cursor: pointer;
+  @include focus-visible;
+  &:hover { text-decoration: underline; }
+}
+
+.sa-start {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: token('space-6');
+  align-items: center;
+  padding: token('space-6');
+  border: token('border-width-default') solid token('color-border-default');
+  border-radius: token('radius-lg');
+  background: token('color-surface-default');
+
+  @include breakpoint-up('lg') { grid-template-columns: minmax(0, 1.4fr) minmax(16rem, 1fr); padding: token('space-8'); }
+
+  &__intro {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: token('space-3');
+    p { margin: 0 0 token('space-2'); max-width: 36rem; @include text('md'); color: token('color-text-secondary'); }
+  }
+  &__title { margin: 0; font-family: token('font-family-title'); @include text('xl', 'bold'); }
+  &__steps {
+    display: flex;
+    flex-direction: column;
+    gap: token('space-3');
+    margin: 0;
+    padding: token('space-4');
+    list-style: none;
+    border-radius: token('radius-lg');
+    background: token('color-surface-neutral-light');
+    li { display: flex; align-items: center; gap: token('space-3'); @include text('sm', 'medium'); }
+  }
 }

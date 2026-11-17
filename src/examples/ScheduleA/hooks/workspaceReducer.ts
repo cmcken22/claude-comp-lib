@@ -3,7 +3,7 @@ import { templateSections } from '../data/sections';
 import { blankWorkspace } from '../data/workspaces';
 import { runAgent } from '../lib/agents';
 import { cloneSections, insertSection, move, newId, updateSection } from '../lib/scope';
-import type { AgentId, FindingStatus, Note, ScopeItem, ScopeMeta, Workspace } from '../types';
+import type { AgentId, FindingStatus, Note, ScopeItem, ScopeMeta, StepId, Workspace } from '../types';
 
 export interface StoreState {
   workspaces: Record<string, Workspace>;
@@ -33,7 +33,8 @@ export type Action =
   | { type: 'note'; id: string; note: Note }
   | { type: 'insertSuggestion'; id: string; itemId: string }
   | { type: 'createVersion'; summary: string }
-  | { type: 'restoreVersion'; versionId: string };
+  | { type: 'restoreVersion'; versionId: string }
+  | { type: 'confirmStep'; step: StepId };
 
 const nextLabel = (label: string) => {
   const [major, minor] = label.replace('v', '').split('.').map(Number);
@@ -81,6 +82,8 @@ function workspaceReducer(ws: Workspace, a: Action): Workspace {
       return edited(ws, { sections: updateSection(sections, a.sectionId, (items) => move(items, items.findIndex((i) => i.id === a.itemId), a.dir)) });
     case 'starter':
       return edited(ws, { sections: a.kind === 'template' ? cloneSections(templateSections).map((s) => ({ ...s, items: s.items.map((i) => ({ ...i, id: newId('i'), origin: { type: 'historical' as const, ref: 'Schedule A Template Rev 7' } })) })) : insertSection(insertSection([], 'general'), 'exclusions') });
+    case 'confirmStep':
+      return ws.confirmed.includes(a.step) ? ws : { ...ws, confirmed: [...ws.confirmed, a.step] };
     case 'toggleDoc':
       return { ...ws, selectedDocIds: ws.selectedDocIds.includes(a.id) ? ws.selectedDocIds.filter((d) => d !== a.id) : [...ws.selectedDocIds, a.id] };
     case 'setDocs':

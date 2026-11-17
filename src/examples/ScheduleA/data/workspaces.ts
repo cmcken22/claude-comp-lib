@@ -23,6 +23,7 @@ export function blankWorkspace(meta: ScopeMeta): Workspace {
     currentVersion: 'v0.1',
     revision: 0,
     versionRevision: -1,
+    confirmed: [],
   };
 }
 
@@ -42,6 +43,7 @@ export function initialWorkspaces(): Record<string, Workspace> {
       currentVersion: 'v0.3',
       revision: 0,
       versionRevision: -1,
+      confirmed: ['details', 'references'],
     },
     [elec.id]: {
       ...blankWorkspace({ ...elec }),
@@ -51,12 +53,14 @@ export function initialWorkspaces(): Record<string, Workspace> {
       ],
       currentVersion: 'v1.2',
       versionRevision: 0,
+      confirmed: ['details', 'references'],
     },
     [plumb.id]: {
       ...blankWorkspace({ ...plumb }),
       sections: cloneSections(templateSections),
       currentVersion: 'v2.0',
       versionRevision: 0,
+      confirmed: ['details', 'references', 'export'],
     },
   };
 }

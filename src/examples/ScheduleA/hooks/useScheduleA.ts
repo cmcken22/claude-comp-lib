@@ -10,7 +10,8 @@ import { useUiState, type Dialog } from './useUiState';
 import { storeReducer, type Action } from './workspaceReducer';
 
 export interface ScheduleAOptions {
-  initialStep?: StepId;
+  /** 'start' opens on the project's scope list; a step opens the demo draft at that step. */
+  initialStep?: StepId | 'start';
   initialDialog?: Dialog;
   /** Start on a brand-new, empty scope. */
   startNew?: boolean;
@@ -35,7 +36,7 @@ const NEW_SCOPE: ScopeMeta = {
 };
 
 /** All state and actions for the Schedule A workspace. Components reach it through useSA(). */
-export function useScheduleA({ initialStep = 'editor', initialDialog = null, startNew = false }: ScheduleAOptions = {}) {
+export function useScheduleA({ initialStep = 'start', initialDialog = null, startNew = false }: ScheduleAOptions = {}) {
   const [store, dispatch] = useReducer(storeReducer, undefined, () => {
     const workspaces = initialWorkspaces();
     if (startNew) workspaces[NEW_SCOPE.id] = blankWorkspace(NEW_SCOPE);
@@ -51,7 +52,8 @@ export function useScheduleA({ initialStep = 'editor', initialDialog = null, sta
   const createScope = useCallback((meta: Partial<ScopeMeta> = {}) => {
     const id = `sa-${Date.now().toString(36)}`;
     dispatch({ type: 'create', meta: { ...NEW_SCOPE, ...meta, id, updatedAt: TODAY } });
-    ui.setStep('editor');
+    ui.setLanding(false);
+    ui.setStep('details');
     ui.openFinding(null);
   }, [ui]);
 
@@ -100,7 +102,7 @@ export function useScheduleA({ initialStep = 'editor', initialDialog = null, sta
     createScope,
     runAgent,
     insertSuggestion,
-    openScope: (id: string) => { dispatch({ type: 'open', id }); ui.openFinding(null); ui.setStep('editor'); },
+    openScope: (id: string) => { dispatch({ type: 'open', id }); ui.openFinding(null); ui.setLanding(false); ui.setStep('editor'); },
   };
 }
 

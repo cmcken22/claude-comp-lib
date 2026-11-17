@@ -21,8 +21,8 @@ export function PageHeader() {
           <li><a href="#projects">Projects</a></li>
           <li><a href="#project">{meta.projectNumber} · Harbourview Ph 2</a></li>
           <li><a href="#subcontracts">Subcontracts</a></li>
-          <li><a href="#req">{meta.requisition.split(' · ')[0]}</a></li>
-          <li aria-current="page">Schedule A</li>
+          <li><button type="button" className="sa-crumb-btn" onClick={() => ui.setLanding(true)}>Schedule A scopes</button></li>
+          <li aria-current="page">{meta.code}</li>
         </ol>
       </nav>
 

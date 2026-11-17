@@ -31,6 +31,7 @@ export function ExportDialog() {
     setBusy(kind);
     window.setTimeout(() => {
       if (unversioned) dispatch({ type: 'createVersion', summary: kind === 'attach' ? `Attached to ${ws.meta.requisition.split(' · ')[0]}.` : `Exported as ${kind.toUpperCase()}.` });
+      dispatch({ type: 'confirmStep', step: 'export' });
       setBusy(null);
       setDone({ kind, version: nextVersion });
     }, 1100);

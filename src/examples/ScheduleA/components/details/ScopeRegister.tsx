@@ -8,8 +8,9 @@ import { PlusIcon } from '../../icons';
 import { ScopeStatusBadge } from '../common/Badges';
 
 /** All Schedule A scopes on the project, with open and create actions. */
-export function ScopeRegister() {
-  const { register, activeId, can, ui, openScope } = useSA();
+export function ScopeRegister({ showCurrent = true }: { showCurrent?: boolean }) {
+  const { register, activeId: openId, can, ui, openScope } = useSA();
+  const activeId = showCurrent ? openId : null;
 
   return (
     <Card as="section" padding="none" aria-labelledby="sa-register-title">

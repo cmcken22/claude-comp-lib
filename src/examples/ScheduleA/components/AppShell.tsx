@@ -46,7 +46,7 @@ export function AppShell({ projectName, projectNumber, userName, activeNavId, ch
       <Navbar
         sticky
         brand={<GateThreeMark />}
-        menuOpen={isDocked() ? !collapsed : navOpen}
+        menuOpen={navOpen}
         menuControls="sa-sidebar"
         onMenuClick={() => (isDocked() ? setCollapsed((c) => !c) : setNavOpen((o) => !o))}
         actions={
