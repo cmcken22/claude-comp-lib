@@ -15,6 +15,7 @@ $panel-inline: 90rem;
 
   &__body { display: flex; flex: 1; min-height: 0; }
   &__sidebar { flex-shrink: 0; }
+  &__sidebar--collapsed { @include breakpoint-up('lg') { display: none; } }
 }
 
 .sa-project-picker { min-width: 15rem; }

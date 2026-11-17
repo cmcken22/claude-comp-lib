@@ -36,6 +36,9 @@ const sections: SidebarSection[] = sampleSections.map((s) =>
 /** Global Navbar on top, Sidebar on the left (a drawer on narrow screens), scrolling content on the right. */
 export function AppShell({ projectName, projectNumber, userName, activeNavId, children }: AppShellProps) {
   const [navOpen, setNavOpen] = useState(false);
+  // At lg and up the sidebar is docked; the menu button collapses it instead of opening a drawer.
+  const [collapsed, setCollapsed] = useState(false);
+  const isDocked = () => typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches;
   const [activeNav, setActiveNav] = useState(activeNavId);
 
   return (
@@ -43,9 +46,9 @@ export function AppShell({ projectName, projectNumber, userName, activeNavId, ch
       <Navbar
         sticky
         brand={<GateThreeMark />}
-        menuOpen={navOpen}
+        menuOpen={isDocked() ? !collapsed : navOpen}
         menuControls="sa-sidebar"
-        onMenuClick={() => setNavOpen((o) => !o)}
+        onMenuClick={() => (isDocked() ? setCollapsed((c) => !c) : setNavOpen((o) => !o))}
         actions={
           <>
             <NavbarIconButton label="Notifications" badge={2}>
@@ -73,7 +76,7 @@ export function AppShell({ projectName, projectNumber, userName, activeNavId, ch
       <div className="sa-shell__body">
         <Sidebar
           id="sa-sidebar"
-          className="sa-shell__sidebar"
+          className={`sa-shell__sidebar${collapsed ? ' sa-shell__sidebar--collapsed' : ''}`}
           sections={sections}
           activeId={activeNav}
           open={navOpen}
