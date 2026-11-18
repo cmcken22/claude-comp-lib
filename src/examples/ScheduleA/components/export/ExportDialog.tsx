@@ -5,7 +5,8 @@ import { CURRENT_USER, TODAY } from '../../data/project';
 import { useSA } from '../../hooks/context';
 import { formatDate } from '../../lib/format';
 import { reviewCounts } from '../../lib/review';
-import { AlertIcon, DocIcon, PaperclipIcon } from '../../icons';
+import { AlertIcon, DocIcon, PaperclipIcon, SendIcon } from '../../icons';
+import { requisitionLabel, subcontractorLabel } from '../../lib/meta';
 import { Modal } from '../common/Modal';
 import { DocumentPreview } from './DocumentPreview';
 import { ExportSuccess, type ExportKind } from './ExportSuccess';
@@ -28,9 +29,17 @@ export function ExportDialog() {
   }, [open]);
 
   const run = (kind: ExportKind) => {
+    // Without a requisition, attaching starts by choosing one.
+    if (kind === 'attach' && !ws.meta.requisition) {
+      ui.setDialog('attach');
+      return;
+    }
     setBusy(kind);
     window.setTimeout(() => {
-      if (unversioned) dispatch({ type: 'createVersion', summary: kind === 'attach' ? `Attached to ${ws.meta.requisition.split(' · ')[0]}.` : `Exported as ${kind.toUpperCase()}.` });
+      if (kind === 'tender') dispatch({ type: 'meta', patch: { status: 'Issued for tender' } });
+      if (kind === 'attach') dispatch({ type: 'meta', patch: { status: 'Attached' } });
+      const summary = { tender: 'Issued for tender.', attach: `Attached to ${ws.meta.requisition.split(' · ')[0]}.`, pdf: 'Exported as PDF.', word: 'Exported as Word.' }[kind];
+      if (unversioned || kind === 'tender' || kind === 'attach') dispatch({ type: 'createVersion', summary });
       dispatch({ type: 'confirmStep', step: 'export' });
       setBusy(null);
       setDone({ kind, version: nextVersion });
@@ -50,9 +59,11 @@ export function ExportDialog() {
       footer={done ? <Button onClick={() => ui.setDialog(null)}>Done</Button> : (
         <div className="sa-export__actions">
           <Button variant="ghost" onClick={() => ui.setDialog(null)}>Cancel</Button>
-          <Button variant="outline" startIcon={<DocIcon size={16} />} loading={busy === 'word'} disabled={blocked || !can.export || Boolean(busy)} onClick={() => run('word')}>Export as Word</Button>
-          <Button variant="outline" startIcon={<DocIcon size={16} />} loading={busy === 'pdf'} disabled={blocked || !can.export || Boolean(busy)} onClick={() => run('pdf')}>Export as PDF</Button>
-          <Button startIcon={<PaperclipIcon size={16} />} loading={busy === 'attach'} disabled={blocked || !can.export || Boolean(busy)} onClick={() => run('attach')}>Attach to requisition</Button>
+          <Button variant="ghost" startIcon={<DocIcon size={16} />} loading={busy === 'word'} disabled={blocked || !can.export || Boolean(busy)} onClick={() => run('word')}>Word</Button>
+          <Button variant="ghost" startIcon={<DocIcon size={16} />} loading={busy === 'pdf'} disabled={blocked || !can.export || Boolean(busy)} onClick={() => run('pdf')}>PDF</Button>
+          <span className="sa-export__divider" aria-hidden="true" />
+          <Button variant="outline" startIcon={<SendIcon size={16} />} loading={busy === 'tender'} disabled={blocked || !can.export || Boolean(busy)} onClick={() => run('tender')}>Issue for tender</Button>
+          <Button startIcon={<PaperclipIcon size={16} />} loading={busy === 'attach'} disabled={blocked || !can.export || Boolean(busy)} onClick={() => run('attach')}>{ws.meta.requisition ? 'Attach to requisition' : 'Attach to requisition…'}</Button>
         </div>
       )}
     >
@@ -73,7 +84,8 @@ export function ExportDialog() {
             <dl className="sa-facts sa-facts--stack">
               <div><dt>Document title</dt><dd>{ws.meta.title}</dd></div>
               <div><dt>Project</dt><dd>{ws.meta.projectNumber} · {ws.meta.projectName}</dd></div>
-              <div><dt>Subcontractor</dt><dd>{ws.meta.subcontractor}</dd></div>
+              <div><dt>Subcontractor</dt><dd>{subcontractorLabel(ws.meta)}</dd></div>
+              <div><dt>Requisition</dt><dd>{requisitionLabel(ws.meta)}</dd></div>
               <div><dt>Version</dt><dd><span className="sa-mono">{nextVersion}</span>{unversioned && <span className="sa-muted"> · new version created on export</span>}</dd></div>
               <div><dt>Prepared by</dt><dd>{CURRENT_USER.name}, {CURRENT_USER.title}</dd></div>
               <div><dt>Prepared date</dt><dd>{formatDate(TODAY)}</dd></div>

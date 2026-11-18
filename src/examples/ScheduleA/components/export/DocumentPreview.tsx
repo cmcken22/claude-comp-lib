@@ -1,5 +1,6 @@
 import { ITEM_KIND } from '../../config';
 import { formatDate } from '../../lib/format';
+import { divisionsLong, requisitionLabel, subcontractorLabel } from '../../lib/meta';
 import type { ScopeMeta, ScopeSection } from '../../types';
 
 export interface DocumentPreviewProps {
@@ -22,9 +23,10 @@ export function DocumentPreview({ meta, sections, version, preparedBy, preparedA
         <h3 className="sa-paper__title">{meta.title.replace(/^Schedule A — /, '')}</h3>
         <dl className="sa-paper__facts">
           <div><dt>Project</dt><dd>{meta.projectNumber} · {meta.projectName}</dd></div>
-          <div><dt>Subcontract</dt><dd>{meta.requisition}</dd></div>
-          <div><dt>Subcontractor</dt><dd>{meta.subcontractor}</dd></div>
-          <div><dt>Trade / Division</dt><dd>{meta.trade} · {meta.division}</dd></div>
+          <div><dt>Subcontract</dt><dd>{requisitionLabel(meta)}</dd></div>
+          <div><dt>Subcontractor</dt><dd>{subcontractorLabel(meta)}</dd></div>
+          <div><dt>Trade</dt><dd>{meta.trade}</dd></div>
+          <div><dt>Divisions</dt><dd>{divisionsLong(meta.divisions)}</dd></div>
           <div><dt>Version</dt><dd>{version}</dd></div>
           <div><dt>Prepared</dt><dd>{preparedBy} · {formatDate(preparedAt)}</dd></div>
           <div><dt>Review status</dt><dd>{reviewStatus}</dd></div>

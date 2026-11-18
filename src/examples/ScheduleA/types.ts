@@ -2,7 +2,8 @@
 
 export type Role = 'admin' | 'editor' | 'follower';
 export type StepId = 'details' | 'editor' | 'references' | 'review' | 'export';
-export type ScopeStatus = 'Not started' | 'Draft' | 'In review' | 'Issued';
+/** Draft → (In review) → Issued for tender → revised → Attached to a requisition. */
+export type ScopeStatus = 'Not started' | 'Draft' | 'In review' | 'Issued for tender' | 'Attached';
 export type ItemKind = 'inclusion' | 'exclusion' | 'clarification';
 export type Severity = 'critical' | 'high' | 'medium' | 'low';
 export type FindingStatus = 'open' | 'accepted' | 'resolved' | 'dismissed';
@@ -23,10 +24,13 @@ export interface ScopeMeta {
   projectName: string;
   projectNumber: string;
   projectType: string;
+  /** Gate Three requisition; empty while drafting or tendering. */
   requisition: string;
+  /** Awarded subcontractor; empty until the tender is awarded. */
   subcontractor: string;
   trade: string;
-  division: string;
+  /** MasterFormat divisions; one trade often covers several. */
+  divisions: string[];
   status: ScopeStatus;
   owner: string;
   updatedAt: string;
@@ -40,7 +44,7 @@ export interface ScopeItem {
   critical: boolean;
   tags: string[];
   /** Where the language came from, when it was not typed from scratch. */
-  origin?: { type: 'historical' | 'ai'; ref: string };
+  origin?: { type: 'historical' | 'ai' | 'import'; ref: string };
 }
 
 export interface ScopeSection {

@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import type { Role, StepId } from '../types';
 
-export type Dialog = null | 'export' | 'versions' | 'newScope' | 'library' | 'createVersion';
+export type Dialog = null | 'export' | 'versions' | 'newScope' | 'library' | 'createVersion' | 'attach' | 'import' | 'doc';
 
 export interface Highlight {
   sectionKey: string;
@@ -23,6 +23,9 @@ export function useUiState(initialStep: StepId | 'start', initialDialog: Dialog)
   const [panelOpen, setPanelOpen] = useState(false);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [highlight, setHighlight] = useState<Highlight | null>(null);
+  /** Editor side panel: linked documents or AI findings. */
+  const [sideTab, setSideTab] = useState<'documents' | 'findings'>('documents');
+  const [docId, setDocId] = useState<string | null>(null);
 
   const jumpTo = useCallback((sectionKey: string, itemId?: string) => {
     setStep('editor');
@@ -37,7 +40,10 @@ export function useUiState(initialStep: StepId | 'start', initialDialog: Dialog)
 
   const openFinding = useCallback((id: string | null) => {
     setSelectedFindingId(id);
-    if (id) setPanelCollapsed(false);
+    if (id) {
+      setPanelCollapsed(false);
+      setSideTab('findings');
+    }
   }, []);
 
   return {
@@ -51,5 +57,7 @@ export function useUiState(initialStep: StepId | 'start', initialDialog: Dialog)
     panelOpen, setPanelOpen,
     panelCollapsed, setPanelCollapsed,
     highlight, jumpTo,
+    sideTab, setSideTab,
+    docId, setDocId,
   };
 }

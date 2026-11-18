@@ -2,33 +2,30 @@ import { useState } from 'react';
 import { Button } from '../../../../components/Button';
 import { Drawer } from '../../../../components/Drawer';
 import { FormField } from '../../../../components/FormField';
-import { Input } from '../../../../components/Input';
 import { Select } from '../../../../components/Select';
-import { DIVISIONS, SUBCONTRACTORS, TRADES } from '../../data/project';
+import { TRADES } from '../../data/project';
 import { useSA } from '../../hooks/context';
 import { PlusIcon } from '../../icons';
+import { DivisionPicker } from './DivisionPicker';
 
-/** Collects the minimum context needed to start a new Schedule A. */
+/** Starts a draft scope. A requisition and subcontractor are not needed yet: they come at award. */
 export function NewScopeDrawer() {
   const { ui, createScope, toast } = useSA();
   const [trade, setTrade] = useState('Fire Protection');
-  const [division, setDivision] = useState('21 — Fire Suppression');
-  const [subcontractor, setSubcontractor] = useState('Pyroguard Sprinkler Co.');
-  const [requisition, setRequisition] = useState('REQ-2417-036 · Fire Protection Subcontract');
+  const [divisions, setDivisions] = useState<string[]>(['21 — Fire Suppression', '22 — Plumbing']);
   const [touched, setTouched] = useState(false);
-  const invalid = !requisition.trim();
+  const invalid = divisions.length === 0;
 
   const create = () => {
     setTouched(true);
     if (invalid) return;
+    const first = divisions[0].slice(0, 2);
     createScope({
       trade,
-      division,
-      subcontractor,
-      requisition,
+      divisions,
       title: `Schedule A — ${trade} Scope of Work`,
-      code: `SA-2417-${division.slice(0, 2)}`,
-      tags: [trade, `Div ${division.slice(0, 2)}`],
+      code: `SA-2417-${first}`,
+      tags: [trade, ...divisions.map((d) => `Div ${d.slice(0, 2)}`)],
     });
     ui.setDialog(null);
     toast.push(`New ${trade} scope created as a draft.`);
@@ -43,30 +40,24 @@ export function NewScopeDrawer() {
       footer={
         <div className="sa-drawer-actions">
           <Button variant="ghost" onClick={() => ui.setDialog(null)}>Cancel</Button>
-          <Button onClick={create}>Create scope</Button>
+          <Button onClick={create}>Create draft</Button>
         </div>
       }
     >
       <div className="sa-stack">
-        <FormField label="Contract or requisition" required error={touched && invalid ? 'Enter the Gate Three requisition this scope attaches to.' : undefined}>
-          <Input value={requisition} onChange={(e) => setRequisition(e.target.value)} />
-        </FormField>
-        <FormField label="Subcontractor" required>
-          <Select value={subcontractor} onChange={(e) => setSubcontractor(e.target.value)}>
-            {SUBCONTRACTORS.map((s) => <option key={s}>{s}</option>)}
-          </Select>
-        </FormField>
         <FormField label="Trade">
           <Select value={trade} onChange={(e) => setTrade(e.target.value)}>
             {TRADES.map((s) => <option key={s}>{s}</option>)}
           </Select>
         </FormField>
-        <FormField label="Division (MasterFormat)">
-          <Select value={division} onChange={(e) => setDivision(e.target.value)}>
-            {DIVISIONS.map((s) => <option key={s}>{s}</option>)}
-          </Select>
-        </FormField>
-        <p className="sa-muted">The scope starts empty. On the next screen you can start from the company template, reuse historical language or start blank.</p>
+        <div>
+          <span className="sa-field-label" id="sa-new-divisions">Divisions (MasterFormat) <span className="sa-muted">· select all that apply</span></span>
+          <DivisionPicker labelId="sa-new-divisions" value={divisions} onChange={setDivisions} />
+          {touched && invalid && <p className="sa-field-error">Select at least one division.</p>}
+        </div>
+        <p className="sa-muted">
+          No requisition or subcontractor is needed to start. Draft the scope for tender now, then link it to a requisition once the subcontract is awarded.
+        </p>
       </div>
     </Drawer>
   );

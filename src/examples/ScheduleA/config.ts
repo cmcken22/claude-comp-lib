@@ -1,10 +1,11 @@
 import type { BadgeColor } from '../../components/Badge';
 import type { AgentId, DocType, FindingStatus, ItemKind, Role, ScopeStatus, Severity, StepId } from './types';
 
+/** Reference documents come before the editor so they can be open while the scope is written. */
 export const STEPS: { id: StepId; label: string }[] = [
   { id: 'details', label: 'Scope Details' },
-  { id: 'editor', label: 'Scope Editor' },
   { id: 'references', label: 'Reference Documents' },
+  { id: 'editor', label: 'Scope Editor' },
   { id: 'review', label: 'AI Review' },
   { id: 'export', label: 'Finalize and Export' },
 ];
@@ -50,7 +51,8 @@ export const SCOPE_STATUS: Record<ScopeStatus, BadgeColor> = {
   'Not started': 'neutral',
   Draft: 'yellow',
   'In review': 'blue',
-  Issued: 'green',
+  'Issued for tender': 'purple',
+  Attached: 'green',
 };
 
 export const AGENTS: Record<AgentId, { name: string; short: string; description: string; checks: string[]; stages: string[] }> = {

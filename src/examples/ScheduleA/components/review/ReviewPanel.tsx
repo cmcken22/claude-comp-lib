@@ -9,11 +9,13 @@ import { FindingFiltersBar } from './FindingFiltersBar';
 import { ReviewSummary } from './ReviewSummary';
 
 /** AI review summary, filters, findings and detail. Used inline on wide screens and in a drawer. */
-export function ReviewPanel({ inDrawer = false }: { inDrawer?: boolean }) {
+export function ReviewPanel({ inDrawer = false, embedded = false }: { inDrawer?: boolean; embedded?: boolean }) {
   const { ws, ui } = useSA();
   const { filters, set, reset, visible, active } = useFindingFilters(ws.findings);
   const selected = ws.findings.find((f) => f.id === ui.selectedFindingId);
   const counts = reviewCounts(ws.findings);
+
+  if (embedded) return <div className="sa-panel__body">{body()}</div>;
 
   if (!inDrawer && ui.panelCollapsed) {
     return (
@@ -38,6 +40,13 @@ export function ReviewPanel({ inDrawer = false }: { inDrawer?: boolean }) {
           </button>
         </header>
       )}
+      {body()}
+    </aside>
+  );
+
+  function body() {
+    return (
+      <>
       <p className="sa-panel__disclaimer">Recommendations only. Nothing changes the scope until you insert it.</p>
 
       {selected ? (
@@ -65,6 +74,7 @@ export function ReviewPanel({ inDrawer = false }: { inDrawer?: boolean }) {
           )}
         </>
       )}
-    </aside>
-  );
+      </>
+    );
+  }
 }

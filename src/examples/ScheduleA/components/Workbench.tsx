@@ -16,6 +16,9 @@ import { StepFooter } from './StepFooter';
 import { ReferenceDocsStep } from './references/ReferenceDocsStep';
 import { AiReviewStep } from './review/AiReviewStep';
 import { ReviewPanel } from './review/ReviewPanel';
+import { SidePanel } from './side/SidePanel';
+import { AttachDialog } from './export/AttachDialog';
+import { ImportDrawer } from './editor/ImportDrawer';
 import { StepNav } from './StepNav';
 import { CreateVersionDialog } from './versions/CreateVersionDialog';
 import { VersionDrawer } from './versions/VersionDrawer';
@@ -30,10 +33,10 @@ const STEP_VIEWS: Record<StepId, () => JSX.Element> = {
 
 /** Header, step rail, active step and review panel, plus overlays. */
 export function Workbench() {
-  const { ws, ui, toast } = useSA();
+  const { ui, toast } = useSA();
   const StepView = STEP_VIEWS[ui.step];
-  // Findings sit beside the draft only while editing; the AI Review step shows them in full.
-  const showPanel = ui.step === 'editor' && ws.findings.length > 0;
+  // While editing, the linked documents and findings sit beside the draft.
+  const showPanel = ui.step === 'editor';
 
   // New step starts at the top; a jump-to-section scrolls afterwards in SectionCard.
   useEffect(() => {
@@ -45,6 +48,7 @@ export function Workbench() {
       <div className="sa-page">
         <StartScreen />
         <NewScopeDrawer />
+        <AttachDialog />
         <Toasts toasts={toast.toasts} onDismiss={toast.dismiss} />
       </div>
     );
@@ -61,19 +65,21 @@ export function Workbench() {
         </div>
         {showPanel && (
           <div className="sa-workspace__panel">
-            <ReviewPanel />
+            <SidePanel />
           </div>
         )}
       </div>
 
-      <Drawer className="sa-review-drawer" open={ui.panelOpen} onClose={() => ui.setPanelOpen(false)} title="AI Review" icon={<SparkleIcon />} size="md">
-        <ReviewPanel inDrawer />
+      <Drawer className="sa-review-drawer" open={ui.panelOpen} onClose={() => ui.setPanelOpen(false)} title={ui.step === 'editor' ? 'Documents and findings' : 'AI Review'} icon={<SparkleIcon />} size="md">
+        {ui.step === 'editor' ? <SidePanel inDrawer /> : <ReviewPanel inDrawer />}
       </Drawer>
       <ClauseLibraryDrawer />
       <NewScopeDrawer />
       <VersionDrawer />
       <CreateVersionDialog />
       <ExportDialog />
+      <AttachDialog />
+      <ImportDrawer />
       <Toasts toasts={toast.toasts} onDismiss={toast.dismiss} />
     </div>
   );

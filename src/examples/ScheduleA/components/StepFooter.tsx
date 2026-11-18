@@ -26,20 +26,24 @@ export function StepFooter() {
 
   const actions: Record<StepId, NextAction> = {
     details: {
-      hint: 'Check the requisition and subcontractor, then confirm.',
+      hint: ws.meta.divisions.length
+        ? 'Confirm the trade and divisions. A requisition and subcontractor can be added later, at award.'
+        : 'Select at least one division.',
       label: 'Confirm and continue',
-      disabled: !(ws.meta.subcontractor && ws.meta.requisition.trim()),
-      run: () => { dispatch({ type: 'confirmStep', step: 'details' }); go('editor'); },
+      disabled: ws.meta.divisions.length === 0,
+      run: () => { dispatch({ type: 'confirmStep', step: 'details' }); go('references'); },
+    },
+    references: {
+      hint: ws.selectedDocIds.length
+        ? `${ws.selectedDocIds.length} documents linked. They stay open beside the editor while you write.`
+        : 'Select at least one reference document.',
+      label: 'Continue to Scope Editor',
+      disabled: ws.selectedDocIds.length === 0,
+      run: () => { dispatch({ type: 'confirmStep', step: 'references' }); go('editor'); },
     },
     editor: items === 0
-      ? { hint: 'Add clauses first: use the template, browse the library or start blank.', label: 'Continue to Reference Documents', disabled: true, run: () => go('references') }
-      : { hint: `${items} ${items === 1 ? 'clause' : 'clauses'} drafted. Next, choose what the review agents compare against.`, label: 'Continue to Reference Documents', run: () => go('references') },
-    references: {
-      hint: ws.selectedDocIds.length ? `${ws.selectedDocIds.length} documents selected for review.` : 'Select at least one reference document.',
-      label: 'Continue to AI Review',
-      disabled: ws.selectedDocIds.length === 0,
-      run: () => { dispatch({ type: 'confirmStep', step: 'references' }); go('review'); },
-    },
+      ? { hint: 'Add clauses: import from your drawing and spec review, use the template or reuse past clauses.', label: 'Continue to AI Review', disabled: true, run: () => go('review') }
+      : { hint: `${items} ${items === 1 ? 'clause' : 'clauses'} drafted. Next, check the draft with the review agents.`, label: 'Continue to AI Review', run: () => go('review') },
     review: !ran
       ? { hint: running ? 'Agents are reviewing the draft…' : 'Run both agents to check the draft for conflicts and likely gaps.', label: 'Run both agents', icon: <SparkleIcon size={16} />, disabled: running || !can.edit, run: () => { (['language', 'gap'] as const).forEach((a) => ws.runs[a].status !== 'complete' && runAgent(a)); } }
       : { hint: counts.critical ? `${counts.critical} critical finding open. Open it in the list below to resolve it, or continue and acknowledge it on export.` : `${counts.open} findings open, none critical.`, label: 'Continue to Finalize', run: () => go('export') },

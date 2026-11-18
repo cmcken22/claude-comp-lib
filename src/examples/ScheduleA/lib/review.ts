@@ -48,7 +48,7 @@ export function readiness(ws: Workspace): ReadinessCheck[] {
   const ran = ws.runs.language.status === 'complete' && ws.runs.gap.status === 'complete';
   const current = ran && !isOutdated(ws, 'language') && !isOutdated(ws, 'gap');
   return [
-    { id: 'details', label: 'Scope details complete', ok: Boolean(ws.meta.subcontractor && ws.meta.requisition), detail: `${ws.meta.subcontractor || 'No subcontractor'} · ${ws.meta.requisition || 'No requisition'}` },
+    { id: 'details', label: 'Requisition linked', ok: Boolean(ws.meta.requisition), detail: ws.meta.requisition ? `${ws.meta.requisition.split(' · ')[0]} · ${ws.meta.subcontractor}` : 'Not needed to issue for tender. Required to attach.' },
     { id: 'content', label: 'Scope has content', ok: items > 0, blocking: true, detail: `${ws.sections.length} sections · ${items} items` },
     { id: 'refs', label: 'Reference documents selected', ok: ws.selectedDocIds.length > 0, detail: `${ws.selectedDocIds.length} documents` },
     { id: 'ran', label: 'Both review agents run on the latest draft', ok: current, detail: !ran ? 'One or more agents have not run' : current ? 'Up to date' : 'Scope changed since the last run' },

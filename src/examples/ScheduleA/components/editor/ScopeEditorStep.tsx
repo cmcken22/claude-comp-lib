@@ -3,7 +3,7 @@ import { Select } from '../../../../components/Select';
 import { SECTION_CATALOG } from '../../config';
 import { useSA } from '../../hooks/context';
 import { countCritical, countItems } from '../../lib/scope';
-import { LibraryIcon } from '../../icons';
+import { ImportIcon, LibraryIcon } from '../../icons';
 import { EmptyScope } from './EmptyScope';
 import { ScopeOverview } from './ScopeOverview';
 import { SectionCard } from './SectionCard';
@@ -38,6 +38,9 @@ export function ScopeEditorStep() {
             </Select>
             <Button variant="ghost" size="sm" startIcon={<LibraryIcon size={16} />} onClick={() => ui.openLibrary(null)}>
               Clause library
+            </Button>
+            <Button variant="outline" size="sm" startIcon={<ImportIcon size={16} />} onClick={() => ui.setDialog('import')}>
+              Import
             </Button>
           </div>
         )}

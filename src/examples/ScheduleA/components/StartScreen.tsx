@@ -25,8 +25,8 @@ export function StartScreen() {
 
       <section className="sa-start" aria-labelledby="sa-start-title">
         <div className="sa-start__intro">
-          <h2 id="sa-start-title" className="sa-start__title">Create a Schedule A for a subcontract</h2>
-          <p>Build the scope of work, check it against standard schedules and past change orders, then attach it to the requisition in Gate Three.</p>
+          <h2 id="sa-start-title" className="sa-start__title">Create a scope of work</h2>
+          <p>Draft the scope of work for tender, check it against standard schedules and past change orders, then attach it to the requisition once the subcontract is awarded. No requisition or subcontractor is needed to start.</p>
           <Button size="lg" startIcon={<PlusIcon size={18} />} disabled={!can.edit} onClick={() => ui.setDialog('newScope')}>
             Start a new scope
           </Button>
@@ -41,7 +41,7 @@ export function StartScreen() {
         </ol>
       </section>
 
-      <ScopeRegister showCurrent={false} />
+      <ScopeRegister />
     </>
   );
 }

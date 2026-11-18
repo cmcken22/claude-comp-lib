@@ -22,7 +22,7 @@ export const scopeRegister: ScopeMeta[] = [
     requisition: 'REQ-2417-031 · Mechanical HVAC Subcontract',
     subcontractor: 'Northline Mechanical Ltd.',
     trade: 'Mechanical',
-    division: '23 — HVAC',
+    divisions: ['23 — HVAC', '25 — Integrated Automation'],
     status: 'Draft',
     owner: 'Kai Moreno',
     updatedAt: '2026-11-17T13:48',
@@ -33,12 +33,12 @@ export const scopeRegister: ScopeMeta[] = [
     id: 'sa-26',
     code: 'SA-2417-26',
     title: 'Schedule A — Electrical Scope of Work',
-    description: 'Division 26 and 28 electrical and fire alarm scope for the Phase 2 tower.',
-    requisition: 'REQ-2417-034 · Electrical Subcontract',
-    subcontractor: 'Brightway Electric Inc.',
+    description: 'Electrical, communications and fire alarm scope for the Phase 2 tower. Issued to three bidders.',
+    requisition: '',
+    subcontractor: '',
     trade: 'Electrical',
-    division: '26 — Electrical',
-    status: 'In review',
+    divisions: ['26 — Electrical', '27 — Communications', '28 — Electronic Safety and Security'],
+    status: 'Issued for tender',
     owner: 'Priya Raman',
     updatedAt: '2026-11-14T09:20',
     tags: ['Electrical', 'Div 26'],
@@ -52,8 +52,8 @@ export const scopeRegister: ScopeMeta[] = [
     requisition: 'REQ-2417-029 · Plumbing Subcontract',
     subcontractor: 'Coastal Plumbing Systems',
     trade: 'Plumbing',
-    division: '22 — Plumbing',
-    status: 'Issued',
+    divisions: ['22 — Plumbing'],
+    status: 'Attached',
     owner: 'Marcus Lee',
     updatedAt: '2026-10-28T16:02',
     tags: ['Plumbing', 'Div 22'],
@@ -61,7 +61,24 @@ export const scopeRegister: ScopeMeta[] = [
 ];
 
 export const TRADES = ['Mechanical', 'Electrical', 'Plumbing', 'Fire Protection', 'Controls'];
-export const DIVISIONS = ['21 — Fire Suppression', '22 — Plumbing', '23 — HVAC', '25 — Integrated Automation', '26 — Electrical'];
+export const DIVISIONS = [
+  '07 — Thermal and Moisture Protection',
+  '21 — Fire Suppression',
+  '22 — Plumbing',
+  '23 — HVAC',
+  '25 — Integrated Automation',
+  '26 — Electrical',
+  '27 — Communications',
+  '28 — Electronic Safety and Security',
+];
+
+/** Open requisitions in Gate Three that a Schedule A can be attached to. */
+export const REQUISITIONS: { id: string; label: string; subcontractor: string; trade: string }[] = [
+  { id: 'REQ-2417-031', label: 'REQ-2417-031 · Mechanical HVAC Subcontract', subcontractor: 'Northline Mechanical Ltd.', trade: 'Mechanical' },
+  { id: 'REQ-2417-034', label: 'REQ-2417-034 · Electrical Subcontract', subcontractor: 'Brightway Electric Inc.', trade: 'Electrical' },
+  { id: 'REQ-2417-036', label: 'REQ-2417-036 · Fire Protection Subcontract', subcontractor: 'Pyroguard Sprinkler Co.', trade: 'Fire Protection' },
+  { id: 'REQ-2417-040', label: 'REQ-2417-040 · Building Automation Subcontract', subcontractor: 'Delta Controls Integration', trade: 'Controls' },
+];
 export const SUBCONTRACTORS = [
   'Northline Mechanical Ltd.',
   'Pyroguard Sprinkler Co.',

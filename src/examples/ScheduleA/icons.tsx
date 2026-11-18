@@ -70,3 +70,5 @@ export function GateThreeMark() {
     </span>
   );
 }
+export const SendIcon = (p: IconProps) => <Icon {...p}><path d="M22 2L11 13" /><path d="M22 2l-7 20-4-9-9-4z" /></Icon>;
+export const ImportIcon = (p: IconProps) => <Icon {...p}><path d="M12 3v12M7 10l5 5 5-5" /><path d="M5 21h14" /></Icon>;

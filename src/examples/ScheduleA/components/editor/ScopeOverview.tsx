@@ -43,7 +43,7 @@ export function ScopeOverview() {
         <Input value={meta.title} onChange={(e) => dispatch({ type: 'meta', patch: { title: e.target.value } })} />
       </FormField>
       <FormField label="General description" hint="Appears at the top of the exported Schedule A.">
-        <TextArea rows={3} value={meta.description} placeholder="Summarize the work of this subcontract…" onChange={(e) => dispatch({ type: 'meta', patch: { description: e.target.value } })} />
+        <TextArea rows={6} value={meta.description} placeholder="Summarize the work of this subcontract…" onChange={(e) => dispatch({ type: 'meta', patch: { description: e.target.value } })} />
       </FormField>
       <div>
         <span className="sa-field-label" id="sa-tags-label">Trade and division tags</span>

@@ -1,5 +1,6 @@
 import { Button } from '../../../components/Button';
 import { useSA } from '../hooks/context';
+import { divisionNumbers } from '../lib/meta';
 import { reviewCounts } from '../lib/review';
 import { ExportIcon, HistoryIcon, LockIcon, SparkleIcon } from '../icons';
 import { ScopeStatusBadge } from './common/Badges';
@@ -28,9 +29,9 @@ export function PageHeader() {
           <h1 className="sa-header__title">{meta.title.replace(/^Schedule A — /, '')}</h1>
           <p className="sa-header__meta">
             <ScopeStatusBadge status={meta.status} />
-            <span>{meta.subcontractor}</span>
+            <span>{meta.subcontractor || 'Tender · not yet awarded'}</span>
             <span aria-hidden="true">·</span>
-            <span>Div {meta.division}</span>
+            <span>{meta.trade} · Div {divisionNumbers(meta.divisions)}</span>
             <span aria-hidden="true">·</span>
             <span className="sa-mono" title={unversioned ? 'Draft changes since this version' : 'Current version'}>
               {ws.currentVersion}{unversioned ? ' draft' : ''}
@@ -40,9 +41,9 @@ export function PageHeader() {
         </div>
 
         <div className="sa-header__actions">
-          {reviewToggle && counts.total > 0 && (
+          {reviewToggle && (ui.step === 'editor' || counts.total > 0) && (
             <Button variant="ghost" className={reviewToggle} startIcon={<SparkleIcon size={16} />} aria-expanded={ui.panelOpen} onClick={() => ui.setPanelOpen(true)}>
-              Review{counts.open > 0 && <span className="sa-count-pill">{counts.open}</span>}
+              {ui.step === 'editor' ? 'Documents & findings' : 'Review'}{counts.open > 0 && <span className="sa-count-pill">{counts.open}</span>}
             </Button>
           )}
           <Button variant="ghost" startIcon={<HistoryIcon size={16} />} onClick={() => ui.setDialog('versions')}>

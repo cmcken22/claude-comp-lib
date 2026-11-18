@@ -44,7 +44,7 @@ export function ItemEditor({ item, number, onSave, onCancel }: ItemEditorProps) 
           </p>
         )}
         <FormField label={`Clause ${number} text`} required error={empty ? 'Clause text is required.' : undefined}>
-          <TextArea value={text} rows={4} onChange={(e) => setText(e.target.value)} autoFocus />
+          <TextArea className="sa-editor-form__text" value={text} rows={7} onChange={(e) => setText(e.target.value)} autoFocus />
         </FormField>
         <div className="sa-editor-form__row">
           <RadioGroup label="Type" value={kind} onValueChange={(v) => setKind(v as ItemKind)} orientation="horizontal">

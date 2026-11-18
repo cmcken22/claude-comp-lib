@@ -25,10 +25,10 @@ const NEW_SCOPE: ScopeMeta = {
   projectName: 'Harbourview Medical Centre — Phase 2',
   projectNumber: '2417',
   projectType: 'Healthcare · Occupied hospital expansion',
-  requisition: 'REQ-2417-036 · Fire Protection Subcontract',
-  subcontractor: 'Pyroguard Sprinkler Co.',
+  requisition: '',
+  subcontractor: '',
   trade: 'Fire Protection',
-  division: '21 — Fire Suppression',
+  divisions: ['21 — Fire Suppression'],
   status: 'Draft',
   owner: CURRENT_USER.name,
   updatedAt: TODAY,
@@ -102,6 +102,20 @@ export function useScheduleA({ initialStep = 'start', initialDialog = null, star
     createScope,
     runAgent,
     insertSuggestion,
+    /** Reopen a scope issued for tender as a draft revision (e.g. after tender questions or award). */
+    reviseScope: (id: string) => {
+      dispatch({ type: 'open', id });
+      dispatch({ type: 'meta', patch: { status: 'Draft' } });
+      ui.openFinding(null);
+      ui.setLanding(false);
+      ui.setStep('editor');
+      toast.push('Revision started. Your changes will be saved as the next version.', 'info');
+    },
+    /** Choose a scope, then pick its requisition in the Attach dialog. */
+    attachScope: (id: string) => {
+      dispatch({ type: 'open', id });
+      ui.setDialog('attach');
+    },
     openScope: (id: string) => { dispatch({ type: 'open', id }); ui.openFinding(null); ui.setLanding(false); ui.setStep('editor'); },
   };
 }

@@ -17,7 +17,7 @@ export function useToasts(timeout = 4500) {
   const push = useCallback(
     (message: string, tone: Toast['tone'] = 'success') => {
       const id = ++seq.current;
-      setToasts((t) => [...t.slice(-2), { id, tone, message }]);
+      setToasts([{ id, tone, message }]); // One at a time keeps the screen calm.
       timers.current.push(window.setTimeout(() => dismiss(id), timeout));
     },
     [dismiss, timeout],

@@ -1,4 +1,4 @@
-import { ArrowDownIcon, ArrowUpIcon, CopyIcon, EditIcon, FlagIcon, LibraryIcon, SparkleIcon, TrashIcon } from '../../icons';
+import { ArrowDownIcon, ArrowUpIcon, CopyIcon, EditIcon, FlagIcon, ImportIcon, LibraryIcon, SparkleIcon, TrashIcon } from '../../icons';
 import type { ScopeItem } from '../../types';
 import { KindBadge } from '../common/Badges';
 
@@ -32,6 +32,11 @@ export function ScopeItemRow({ item, number, canEdit, isFirst, isLast, highlight
           {item.origin?.type === 'ai' && (
             <span className="sa-origin sa-origin--ai">
               <SparkleIcon size={12} /> AI suggestion {item.origin.ref}
+            </span>
+          )}
+          {item.origin?.type === 'import' && (
+            <span className="sa-origin">
+              <ImportIcon size={12} /> Imported from {item.origin.ref}
             </span>
           )}
           {item.origin?.type === 'historical' && (
